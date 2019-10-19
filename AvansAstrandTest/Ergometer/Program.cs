@@ -54,7 +54,7 @@ namespace ErgoConnect
 		{
 			Console.WriteLine("No connection with bike, using simulator.");
 			bLESimulator = new BLESimulator(ergoID, client);
-            //new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
+            new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
 		}
 	}
 }

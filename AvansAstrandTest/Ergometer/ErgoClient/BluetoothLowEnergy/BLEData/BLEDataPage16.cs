@@ -40,7 +40,7 @@ namespace ErgoConnect
 
         public override string GetData()
         {
-            return $"<{Tag.ET.ToString()}>{elapsedTime}<{Tag.DT.ToString()}>{distanceTravelled}<{Tag.SP.ToString()}>{speed}<{Tag.HR.ToString()}>{heartRate}";
+            return $"<{Tag.PA.ToString()}>page16<{Tag.ET.ToString()}>{elapsedTime}<{Tag.DT.ToString()}>{distanceTravelled}<{Tag.SP.ToString()}>{speed}<{Tag.HR.ToString()}>{heartRate}";
         }
     }
 }

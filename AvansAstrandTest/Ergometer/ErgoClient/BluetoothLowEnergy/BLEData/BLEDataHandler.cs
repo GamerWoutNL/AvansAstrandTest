@@ -76,7 +76,7 @@ namespace ErgoConnect
             if (_bleData.Count > 0)
             {
                 BLEData data = _bleData[_bleData.Count - 1];
-                return $"<{Tag.MT.ToString()}>ergo<{Tag.TS.ToString()}>{DateTime.Now.ToString("s")}{data.GetData()}<{Tag.EOF.ToString()}>";
+                return $"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.TS.ToString()}>{DateTime.Now.ToString("s")}{data.GetData()}<{Tag.EOF.ToString()}>";
             }
             else return String.Empty;
         }

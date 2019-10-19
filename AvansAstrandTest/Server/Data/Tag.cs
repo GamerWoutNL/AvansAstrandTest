@@ -33,6 +33,7 @@ namespace ServerProgram.Data
 		PNU, // The number of the patient
 		DATA, // Data tag
 		LR,  //Login Reaction
+		PA,
 
 		// Patient
 		PNA, // The name of the patient

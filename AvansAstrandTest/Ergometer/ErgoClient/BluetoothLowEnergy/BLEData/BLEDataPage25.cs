@@ -38,7 +38,7 @@ namespace ErgoConnect
 
         public override string GetData()
         {
-            return $"<{Tag.EC.ToString()}>{updateEventCount}<{Tag.IC.ToString()}>{instanteousCadence}<{Tag.AP.ToString()}>{accumulatedPower}<{Tag.IP.ToString()}>{instanteousPower}";
+            return $"<{Tag.PA.ToString()}>page25<{Tag.EC.ToString()}>{updateEventCount}<{Tag.IC.ToString()}>{instanteousCadence}<{Tag.AP.ToString()}>{accumulatedPower}<{Tag.IP.ToString()}>{instanteousPower}";
         }
     }
 }

@@ -70,6 +70,10 @@ namespace ServerProgram.Communication
 			{
 				this.HandlePatientLogin(packet);
 			}
+			else if (action == "data")
+			{
+				this.HandlePatientData(packet);
+			}
 		}
 
 		private void HandlePatientLogin(string packet)
@@ -80,6 +84,36 @@ namespace ServerProgram.Communication
 			string weight = TagDecoder.GetValueByTag(Tag.PWE, packet);
 
 			this.Server.Patient = new Patient(this, name, int.Parse(age), gender, int.Parse(weight));
+		}
+
+		private void HandlePatientData(string packet)
+		{
+			string pageNumber = TagDecoder.GetValueByTag(Tag.PA, packet);
+
+			if (pageNumber == "page16")
+			{
+				this.HandlePatientDataPage16(packet);
+			}
+			else if (pageNumber == "page25")
+			{
+				this.HandlePatientDataPage25(packet);
+			}
+		}
+
+		private void HandlePatientDataPage16(string packet)
+		{
+			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
+			string heartrate = TagDecoder.GetValueByTag(Tag.HR, packet);
+			string speed = TagDecoder.GetValueByTag(Tag.SP, packet);
+			string distance = TagDecoder.GetValueByTag(Tag.DT, packet);
+		}
+
+		private void HandlePatientDataPage25(string packet)
+		{
+			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
+			string instCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
+			string accuPower = TagDecoder.GetValueByTag(Tag.AP, packet);
+			string instPower = TagDecoder.GetValueByTag(Tag.IP, packet);
 		}
 
 		public void Write(string message)
