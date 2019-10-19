@@ -17,32 +17,32 @@ namespace ErgoConnect
     {
 		private Client.Client client;
 		private string ergoID;
-        private string patientName;
-        private string patientNumber;
-        public BLEConnect ergo;
+		public BLEConnect ergo;
         public BLESimulator bLESimulator;
 
 		static void Main(string[] args)
         {
             Console.WriteLine("Patient name: ");
             string patientName = Console.ReadLine();
-            Console.WriteLine("Patient number: ");
-            string patientNumber = Console.ReadLine();
-            Console.WriteLine("Ergo ID: ");
-            string ergoId = Console.ReadLine();
+            Console.WriteLine("Patient age: ");
+            string patientAge = Console.ReadLine();
+			Console.WriteLine("Patient gender (M/F): ");
+			string patientGender = Console.ReadLine();
+			Console.WriteLine("Patient weight: ");
+			string patientWeight = Console.ReadLine();
 
-            Program program = new Program(ergoId, patientName, patientNumber); 
+			new Program("01249", patientName, patientAge, patientGender, patientWeight); 
         }
 
-		public Program(string ergoID, string patientName, string patientNumber)
+		public Program(string ergoID, string patientName, string patientAge, string patientGender, string patientWeight)
 		{
-            this.patientName = patientName;
-            this.patientNumber = patientNumber;
 			this.ergoID = ergoID;
+
 			this.client = new Client.Client();
 			client.Connect("localhost", 5678, ergoID);
-			//client.Write($"<{Tag.MT.ToString()}>ergo<{Tag.AC.ToString()}>setid<{Tag.ID.ToString()}>{this.ergoID}<{Tag.EOF.ToString()}>");
-			this.ergo = new BLEConnect(ergoID, client, this, patientName, patientNumber);
+			client.Write($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>login<{Tag.PNA.ToString()}>{patientName}<{Tag.PAG.ToString()}>{patientAge}<{Tag.PGE.ToString()}>{patientGender}<{Tag.PWE.ToString()}>{patientWeight}<{Tag.EOF.ToString()}>");
+
+			this.ergo = new BLEConnect(ergoID, client, this);
 			client.bleConnect = ergo;
 			this.ergo.Connect();
 
@@ -53,8 +53,8 @@ namespace ErgoConnect
         public void Create()
 		{
 			Console.WriteLine("No connection with bike, using simulator.");
-			bLESimulator = new BLESimulator(ergoID, client, patientName, patientNumber);
-            new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
+			bLESimulator = new BLESimulator(ergoID, client);
+            //new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
 		}
 	}
 }

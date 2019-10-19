@@ -31,11 +31,11 @@ namespace ErgoConnect
         /// Constructor to setup some prequisites. The serial code of the Ergometer is needed to setup the connection.
         /// </summary>
         /// <param name="ergometerSerialLastFiveNumbers"></param>
-        public BLEConnect(string ergometerSerialLastFiveNumbers, IClient iClient, ISim iSim, string patientName, string patientNumber)
+        public BLEConnect(string ergometerSerialLastFiveNumbers, IClient iClient, ISim iSim)
         {
             this.ergometerSerialLastFiveNumbers = ergometerSerialLastFiveNumbers;
             bLESimulator = new BLESimulator(ergometerSerialLastFiveNumbers);
-            this.dataHandler = new BLEDataHandler(ergometerSerialLastFiveNumbers, patientName, patientNumber);
+            this.dataHandler = new BLEDataHandler(ergometerSerialLastFiveNumbers);
             this.iClient = iClient;
             this.iSim = iSim;
         }

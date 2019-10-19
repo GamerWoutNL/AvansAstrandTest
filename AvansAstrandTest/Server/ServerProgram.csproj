@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Server</RootNamespace>
+    <RootNamespace>ServerProgram</RootNamespace>
     <AssemblyName>Server</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -46,6 +46,9 @@
     <Compile Include="Communication\Server.cs" />
     <Compile Include="Communication\ServerClient.cs" />
     <Compile Include="Data\Encrypter.cs" />
+    <Compile Include="Data\Gender.cs" />
+    <Compile Include="Data\Patient.cs" />
+    <Compile Include="Data\Session.cs" />
     <Compile Include="Data\Tag.cs" />
     <Compile Include="Data\TagDecoder.cs" />
     <Compile Include="Program.cs" />

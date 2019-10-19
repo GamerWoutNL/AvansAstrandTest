@@ -34,12 +34,10 @@ namespace ErgoConnect
         /// The ergoID is needed to define the save location of the Ergometer data.
         /// </summary>
         /// <param name="ergoID"></param>
-        public BLESimulator(string ergoID, IClient iClient, string patientName, string patientNumber)
+        public BLESimulator(string ergoID, IClient iClient)
         {
             this._ergoID = ergoID;
             this._iClient = iClient;
-            this._patientName = patientName;
-            this._patientNumber = patientNumber;
         }
 
         /// <summary>
@@ -58,7 +56,7 @@ namespace ErgoConnect
 
         public void RunSimulator()
         {
-            bLEDataHandler = new BLEDataHandler(_ergoID, _patientName, _patientNumber);
+            bLEDataHandler = new BLEDataHandler(_ergoID);
             int i = 0;
             List<byte[]> data = new List<byte[]>();
             while (true)
