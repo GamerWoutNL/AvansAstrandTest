@@ -6,12 +6,27 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9E36E2BF-629A-46F9-9CAC-7E8A57950205}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Ergometer</RootNamespace>
-    <AssemblyName>Ergometer</AssemblyName>
+    <RootNamespace>ErgoConnect</RootNamespace>
+    <AssemblyName>ErgoConnect</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,9 +47,23 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ClientServer|AnyCPU'">
+    <OutputPath>bin\ClientServer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ErgoConnect.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BLELibrary">
+      <HintPath>.\BLELibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,19 +72,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\ErgoClient.cs" />
+    <Compile Include="ApplicationSettings.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEConnect\BLEConnect.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEData\BLEData.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEDecoder\BLEDecoder.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEDecoder\BLEDecoderErgo.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEData\BLEDataHandler.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEData\BLEDataPage16.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEData\BLEDataPage25.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLEDecoder\BLEDecoderHR.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\BLESimulator\BLESimulator.cs" />
+    <Compile Include="ErgoClient\BluetoothLowEnergy\ISim.cs" />
+    <Compile Include="ErgoClient\Client\Client.cs" />
+    <Compile Include="ErgoClient\Client\IClient.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server\ServerProgram.csproj">
       <Project>{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}</Project>
       <Name>ServerProgram</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -25,6 +25,7 @@ namespace ServerProgram.Communication
 		{
 			this.listener.Start();
 			this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
+			Console.WriteLine("Listening..");
 		}
 
 		private void OnConnect(IAsyncResult ar)
