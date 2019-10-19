@@ -15,6 +15,8 @@ namespace ServerProgram.Data
 		public Gender Gender { get; set; }
 		public int Weight { get; set; }
 		public List<Session> Sessions { get; set; }
+		public Session CurrentSession { get; set; }
+		private bool canAdd;
 
 		public Patient(ServerClient client, string name, int age, string gender, int weight)
 		{
@@ -24,6 +26,35 @@ namespace ServerProgram.Data
 			this.Gender = gender == "M" ? Gender.Male : Gender.Female;
 			this.Weight = weight;
 			this.Sessions = new List<Session>();
+			this.canAdd = false;
+		}
+
+		public void AddDataHeartRate(string timestamp, string heartrate)
+		{
+			if (this.canAdd)
+			{
+				this.CurrentSession.HeartrateDataPoints.Add(new DataPoint(heartrate, timestamp));
+			}
+		}
+
+		public void AddDataCadence(string timestamp, string instantaneousCadence)
+		{
+			if (this.canAdd)
+			{
+				this.CurrentSession.InstantaniousCadenceDataPoints.Add(new DataPoint(instantaneousCadence, timestamp));
+			}
+		}
+
+		public void BeginSession()
+		{
+			this.CurrentSession = new Session();
+			this.canAdd = true;
+		}
+
+		public void EndSession()
+		{
+			this.canAdd = false;
+			this.Sessions.Add(this.CurrentSession);
 		}
 
 	}

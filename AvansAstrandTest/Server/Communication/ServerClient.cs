@@ -103,17 +103,17 @@ namespace ServerProgram.Communication
 		private void HandlePatientDataPage16(string packet)
 		{
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
-			string heartrate = TagDecoder.GetValueByTag(Tag.HR, packet);
-			string speed = TagDecoder.GetValueByTag(Tag.SP, packet);
-			string distance = TagDecoder.GetValueByTag(Tag.DT, packet);
+			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
+
+			this.Server.Patient.AddDataHeartRate(timestamp, heartRate);
 		}
 
 		private void HandlePatientDataPage25(string packet)
 		{
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
-			string instCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
-			string accuPower = TagDecoder.GetValueByTag(Tag.AP, packet);
-			string instPower = TagDecoder.GetValueByTag(Tag.IP, packet);
+			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
+
+			this.Server.Patient.AddDataCadence(timestamp, instantaneousCadence);
 		}
 
 		public void Write(string message)
