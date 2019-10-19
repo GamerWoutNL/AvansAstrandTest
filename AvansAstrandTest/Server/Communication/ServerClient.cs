@@ -13,16 +13,16 @@ namespace ServerProgram.Communication
 	public class ServerClient
 	{
 		private TcpClient client;
-		private Server server;
 		private NetworkStream stream;
 		private byte[] buffer;
+		public Server Server { get; set; }
 
 		public ServerClient(TcpClient client, Server server)
 		{
 			this.client = client;
-			this.server = server;
 			this.stream = this.client.GetStream();
 			this.buffer = new byte[1024];
+			this.Server = server;
 
 			this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
 		}
@@ -47,14 +47,73 @@ namespace ServerProgram.Communication
 			catch (IOException)
 			{
 				this.Disconnect();
-				this.server.Clients.Remove(this);
+				this.Server.Clients.Remove(this);
 				Console.WriteLine("Client disconnected");
 			}
 		}
 
 		private void HandlePacket(string packet)
 		{
-			Console.WriteLine(packet);
+			string messageType = TagDecoder.GetValueByTag(Tag.MT, packet);
+
+			if (messageType == "patient")
+			{
+				this.HandlePatientPacket(packet);
+			}
+		}
+
+		private void HandlePatientPacket(string packet)
+		{
+			string action = TagDecoder.GetValueByTag(Tag.AC, packet);
+
+			if (action == "login")
+			{
+				this.HandlePatientLogin(packet);
+			}
+			else if (action == "data")
+			{
+				this.HandlePatientData(packet);
+			}
+		}
+
+		private void HandlePatientLogin(string packet)
+		{
+			string name = TagDecoder.GetValueByTag(Tag.PNA, packet);
+			string age = TagDecoder.GetValueByTag(Tag.PAG, packet);
+			string gender = TagDecoder.GetValueByTag(Tag.PGE, packet);
+			string weight = TagDecoder.GetValueByTag(Tag.PWE, packet);
+
+			this.Server.Patient = new Patient(this, name, int.Parse(age), gender, int.Parse(weight));
+		}
+
+		private void HandlePatientData(string packet)
+		{
+			string pageNumber = TagDecoder.GetValueByTag(Tag.PA, packet);
+
+			if (pageNumber == "page16")
+			{
+				this.HandlePatientDataPage16(packet);
+			}
+			else if (pageNumber == "page25")
+			{
+				this.HandlePatientDataPage25(packet);
+			}
+		}
+
+		private void HandlePatientDataPage16(string packet)
+		{
+			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
+			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
+
+			this.Server.Patient.AddDataHeartRate(timestamp, heartRate);
+		}
+
+		private void HandlePatientDataPage25(string packet)
+		{
+			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
+			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
+
+			this.Server.Patient.AddDataCadence(timestamp, instantaneousCadence);
 		}
 
 		public void Write(string message)

@@ -30,9 +30,15 @@ namespace ServerProgram.Data
 		MT, // The Message type of the message
 		SR, // Set resistance percentage
 		DM,  // Doctors message
-		PNA, // The name of the patient
 		PNU, // The number of the patient
 		DATA, // Data tag
-		LR  //Login Reaction
+		LR,  //Login Reaction
+		PA,
+
+		// Patient
+		PNA, // The name of the patient
+		PAG, //age
+		PGE, //gender
+		PWE //weight
 	}
 }

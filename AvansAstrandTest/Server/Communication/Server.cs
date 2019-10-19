@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using ServerProgram.Data;
 
 namespace ServerProgram.Communication
 {
@@ -12,7 +13,7 @@ namespace ServerProgram.Communication
 	{
 		private TcpListener listener;
 		public List<ServerClient> Clients { get; set; }
-		public ServerClient Patient { get; set; }
+		public Patient Patient { get; set; }
 
 		public Server(int port)
 		{
@@ -25,6 +26,7 @@ namespace ServerProgram.Communication
 		{
 			this.listener.Start();
 			this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
+			Console.WriteLine("Listening..");
 		}
 
 		private void OnConnect(IAsyncResult ar)
@@ -38,7 +40,7 @@ namespace ServerProgram.Communication
 
 		public void SentToPatient(string message)
 		{
-			this.Patient.Write(message);
+			this.Patient.Client.Write(message);
 		}
 
 		public void Stop()
