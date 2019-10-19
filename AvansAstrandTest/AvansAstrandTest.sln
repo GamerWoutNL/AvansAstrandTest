@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ergometer", "Ergometer\Ergometer.csproj", "{9E36E2BF-629A-46F9-9CAC-7E8A57950205}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerProgram", "Server\ServerProgram.csproj", "{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specialist", "Specialist\Specialist.csproj", "{535221F4-89D7-4441-A675-ED0714B38372}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E36E2BF-629A-46F9-9CAC-7E8A57950205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E36E2BF-629A-46F9-9CAC-7E8A57950205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E36E2BF-629A-46F9-9CAC-7E8A57950205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E36E2BF-629A-46F9-9CAC-7E8A57950205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{535221F4-89D7-4441-A675-ED0714B38372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535221F4-89D7-4441-A675-ED0714B38372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535221F4-89D7-4441-A675-ED0714B38372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535221F4-89D7-4441-A675-ED0714B38372}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E5F3BFB-E3B8-47BC-9DED-AA8A9ECC9F04}
+	EndGlobalSection
+EndGlobal
