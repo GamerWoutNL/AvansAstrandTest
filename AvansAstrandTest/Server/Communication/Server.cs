@@ -16,6 +16,9 @@ namespace ServerProgram.Communication
 		public List<Patient> Patients { get; set; }
 		public Patient CurrentPatient { get; set; }
 
+		// Male:   VO2max = (0.00212 * Workload + 0.299) / (0.769 * Heart Rate - 48.5) x 1000
+		// Female: VO2max = (0.00193 * Workload + 0.326) / (0.769 * Heart Rate - 56.1) x 1000
+
 		public Server(int port)
 		{
 			FileIO.CreateLogFile();

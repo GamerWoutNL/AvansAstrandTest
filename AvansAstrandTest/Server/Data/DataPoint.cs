@@ -9,13 +9,13 @@ namespace ServerProgram.Data
 	[Serializable]
 	public class DataPoint
 	{
-		public string Data { get; set; }
-		public string Time { get; set; }
+		public DateTime Time { get; set; }
+		public double Data { get; set; }
 
-		public DataPoint(string data, string time)
+		public DataPoint(DateTime time, double data)
 		{
-			this.Data = data;
 			this.Time = time;
+			this.Data = data;
 		}
 	}
 }

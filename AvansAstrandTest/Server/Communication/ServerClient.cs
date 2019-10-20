@@ -114,7 +114,7 @@ namespace ServerProgram.Communication
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
 			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
 
-			this.Server.CurrentPatient.AddDataHeartRate(timestamp, heartRate);
+			this.Server.CurrentPatient.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
 
 			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.EOF.ToString()}>");
 		}
@@ -124,7 +124,7 @@ namespace ServerProgram.Communication
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
 			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
 
-			this.Server.CurrentPatient.AddDataCadence(timestamp, instantaneousCadence);
+			this.Server.CurrentPatient.AddDataCadence(DateTime.Parse(timestamp), double.Parse(instantaneousCadence));
 
 			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.EOF.ToString()}>");
 		}

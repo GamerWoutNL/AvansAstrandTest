@@ -28,21 +28,21 @@ namespace ServerProgram.Data
 			this.canAdd = false;
 		}
 
-		public void AddDataHeartRate(string timestamp, string heartrate)
+		public void AddDataHeartRate(DateTime timestamp, double heartrate)
 		{
 			if (this.canAdd)
 			{
-				this.Session.HeartrateDataPoints.Add(new DataPoint(heartrate, timestamp));
+				this.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 
 				//TODO: Calculations
 			}
 		}
 
-		public void AddDataCadence(string timestamp, string instantaneousCadence)
+		public void AddDataCadence(DateTime timestamp, double instantaneousCadence)
 		{
 			if (this.canAdd)
 			{
-				this.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(instantaneousCadence, timestamp));
+				this.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
 
 				//TODO: Calculations
 			}
