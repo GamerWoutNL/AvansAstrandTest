@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServerProgram.Data
 {
+	[Serializable]
 	public class Patient
 	{
 		public ServerClient Client { get; set; }
@@ -55,6 +56,8 @@ namespace ServerProgram.Data
 		{
 			this.canAdd = false;
 			this.Sessions.Add(this.CurrentSession);
+			this.Client.Server.Patients.Add(this);
+			this.Client.Server.SavePatients();
 		}
 
 	}

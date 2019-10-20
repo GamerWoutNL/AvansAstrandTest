@@ -47,6 +47,7 @@
     <Compile Include="Communication\ServerClient.cs" />
     <Compile Include="Data\DataPoint.cs" />
     <Compile Include="Data\Encrypter.cs" />
+    <Compile Include="Data\FileIO.cs" />
     <Compile Include="Data\Gender.cs" />
     <Compile Include="Data\Patient.cs" />
     <Compile Include="Data\Session.cs" />

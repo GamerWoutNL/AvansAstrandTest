@@ -31,8 +31,15 @@ namespace ErgoConnect
 			Console.WriteLine("Patient weight: ");
 			string patientWeight = Console.ReadLine();
 
-			new Program("01249", patientName, patientAge, patientGender, patientWeight); 
-        }
+			Program program = new Program("01249", patientName, patientAge, patientGender, patientWeight);
+
+			Console.WriteLine("Start session? (press any key)");
+			Console.ReadKey();
+			program.client.Write($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>sessionstart<{Tag.EOF.ToString()}>");
+
+			Console.ReadKey();
+			program.client.Disconnect();
+		}
 
 		public Program(string ergoID, string patientName, string patientAge, string patientGender, string patientWeight)
 		{
@@ -45,9 +52,6 @@ namespace ErgoConnect
 			this.ergo = new BLEConnect(ergoID, client, this);
 			client.bleConnect = ergo;
 			this.ergo.Connect();
-
-            Console.Read();
-			client.Disconnect();
 		}
 
         public void Create()

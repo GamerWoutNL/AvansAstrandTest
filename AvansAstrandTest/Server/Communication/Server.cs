@@ -13,13 +13,16 @@ namespace ServerProgram.Communication
 	{
 		private TcpListener listener;
 		public List<ServerClient> Clients { get; set; }
-		public Patient Patient { get; set; }
+		public List<Patient> Patients { get; set; }
+		public Patient CurrentPatient { get; set; }
 
 		public Server(int port)
 		{
+			FileIO.CreateLogFile();
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
-			this.Patient = null;
+			this.Patients = FileIO.ReadFromBinaryFile<List<Patient>>();
+			this.CurrentPatient = null;
 		}
 
 		public void Start()
@@ -40,7 +43,7 @@ namespace ServerProgram.Communication
 
 		public void SentToPatient(string message)
 		{
-			this.Patient.Client.Write(message);
+			this.CurrentPatient.Client.Write(message);
 		}
 
 		public void Stop()
@@ -52,5 +55,9 @@ namespace ServerProgram.Communication
 			this.listener.Stop();
 		}
 
+		public void SavePatients()
+		{
+			FileIO.WriteToBinaryFile(this.Patients);
+		}
 	}
 }

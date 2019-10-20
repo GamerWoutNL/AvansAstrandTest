@@ -74,6 +74,10 @@ namespace ServerProgram.Communication
 			{
 				this.HandlePatientData(packet);
 			}
+			else if (action == "sessionstart")
+			{
+				this.Server.CurrentPatient.BeginSession();
+			}
 		}
 
 		private void HandlePatientLogin(string packet)
@@ -83,7 +87,7 @@ namespace ServerProgram.Communication
 			string gender = TagDecoder.GetValueByTag(Tag.PGE, packet);
 			string weight = TagDecoder.GetValueByTag(Tag.PWE, packet);
 
-			this.Server.Patient = new Patient(this, name, int.Parse(age), gender, int.Parse(weight));
+			this.Server.CurrentPatient = new Patient(this, name, int.Parse(age), gender, int.Parse(weight));
 		}
 
 		private void HandlePatientData(string packet)
@@ -105,7 +109,7 @@ namespace ServerProgram.Communication
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
 			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
 
-			this.Server.Patient.AddDataHeartRate(timestamp, heartRate);
+			this.Server.CurrentPatient.AddDataHeartRate(timestamp, heartRate);
 		}
 
 		private void HandlePatientDataPage25(string packet)
@@ -113,7 +117,7 @@ namespace ServerProgram.Communication
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
 			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
 
-			this.Server.Patient.AddDataCadence(timestamp, instantaneousCadence);
+			this.Server.CurrentPatient.AddDataCadence(timestamp, instantaneousCadence);
 		}
 
 		public void Write(string message)
