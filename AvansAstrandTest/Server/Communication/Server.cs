@@ -16,6 +16,11 @@ namespace ServerProgram.Communication
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public Patient CurrentPatient { get; set; }
+		public ServerClient PatientClient { get; set; }
+		public Timer TimerWarmingUp { get; set; }
+		public Timer TimerRealTest { get; set; }
+		public Timer TimerCoolingDown { get; set; }
+		public Test CurrentTest { get; set; }
 
 		// Male:   VO2max = (0.00212 * Workload + 0.299) / (0.769 * Heart Rate - 48.5) x 1000
 		// Female: VO2max = (0.00193 * Workload + 0.326) / (0.769 * Heart Rate - 56.1) x 1000
@@ -27,6 +32,16 @@ namespace ServerProgram.Communication
 			this.Clients = new List<ServerClient>();
 			this.Patients = FileIO.ReadFromBinaryFile<List<Patient>>();
 			this.CurrentPatient = null;
+
+			this.CurrentTest = Test.Before;
+
+			this.TimerWarmingUp = new Timer(2 * 60 * 1000);
+			this.TimerRealTest = new Timer(4 * 60 * 1000);
+			this.TimerCoolingDown = new Timer(60 * 1000);
+
+			this.TimerWarmingUp.Elapsed += new ElapsedEventHandler(OnWarmingUpDone);
+			this.TimerRealTest.Elapsed += new ElapsedEventHandler(OnRealTestDone);
+			this.TimerCoolingDown.Elapsed += new ElapsedEventHandler(OnCoolingDownDone);
 		}
 
 		public void Start()
@@ -47,7 +62,28 @@ namespace ServerProgram.Communication
 
 		public void SentToPatient(string message)
 		{
-			this.CurrentPatient.Client.Write(message);
+			this.PatientClient.Write(message);
+		}
+
+		public void AddDataHeartRate(DateTime timestamp, double heartrate)
+		{
+			if (this.CurrentTest == Test.RealTest)
+			{
+				this.CurrentPatient.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
+
+				//TODO: Calculations and user feedback about the session
+			}
+		}
+
+		public void AddDataCadenceAndPower(DateTime timestamp, double instantaneousCadence, double instantaneousPower)
+		{
+			if (this.CurrentTest == Test.RealTest)
+			{
+				this.CurrentPatient.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
+				this.CurrentPatient.Session.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
+
+				//TODO: Calculations and user feedback about the session
+			}
 		}
 
 		public void Stop()
@@ -75,5 +111,37 @@ namespace ServerProgram.Communication
 			FileIO.WriteToBinaryFile(this.Patients);
 		}
 
+		public void BeginSession()
+		{
+			//this.Session = new Session();
+			this.TimerWarmingUp.Start();
+			this.CurrentTest = Test.WarmingUp;
+		}
+
+		public void EndSession()
+		{
+			//this.SavePatient(this);
+		}
+
+		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
+		{
+			this.CurrentTest = Test.RealTest;
+			this.TimerRealTest.Start();
+			this.TimerWarmingUp.Stop();
+		}
+
+		private void OnRealTestDone(object sender, ElapsedEventArgs e)
+		{
+			this.CurrentTest = Test.CoolingDown;
+			this.TimerCoolingDown.Start();
+			this.TimerRealTest.Stop();
+		}
+
+		private void OnCoolingDownDone(object sender, ElapsedEventArgs e)
+		{
+			this.CurrentTest = Test.After;
+			this.EndSession();
+			this.TimerCoolingDown.Stop();
+		}
 	}
 }

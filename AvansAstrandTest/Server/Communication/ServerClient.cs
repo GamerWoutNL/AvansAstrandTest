@@ -25,6 +25,8 @@ namespace ServerProgram.Communication
 			this.buffer = new byte[1024];
 			this.Server = server;
 
+			this.WriteObject(new Patient("henk", 34, Gender.Male, 45));
+
 			this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
 		}
 
@@ -83,7 +85,7 @@ namespace ServerProgram.Communication
 
 		private void HandleStartSession()
 		{
-			this.Server.CurrentPatient.BeginSession();
+			this.Server.BeginSession();
 		}
 
 		private void HandlePatientLogin(string packet)
@@ -93,7 +95,7 @@ namespace ServerProgram.Communication
 			string gender = TagDecoder.GetValueByTag(Tag.PGE, packet);
 			string weight = TagDecoder.GetValueByTag(Tag.PWE, packet);
 
-			this.Server.CurrentPatient = new Patient(this, name, int.Parse(age), gender, int.Parse(weight));
+			this.Server.CurrentPatient = new Patient(name, int.Parse(age), gender == "M" ? Gender.Male : Gender.Female, int.Parse(weight));
 		}
 
 		private void HandlePatientData(string packet)
@@ -115,7 +117,7 @@ namespace ServerProgram.Communication
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
 			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
 
-			this.Server.CurrentPatient.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
+			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
 
 			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.EOF.ToString()}>");
 		}
@@ -126,9 +128,17 @@ namespace ServerProgram.Communication
 			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
 			string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
 
-			this.Server.CurrentPatient.AddDataCadenceAndPower(DateTime.Parse(timestamp), double.Parse(instantaneousCadence), double.Parse(instantaneousPower));
+			this.Server.AddDataCadenceAndPower(DateTime.Parse(timestamp), double.Parse(instantaneousCadence), double.Parse(instantaneousPower));
 
 			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.IP.ToString()}>{instantaneousPower}<{Tag.EOF.ToString()}>");
+		}
+
+		public void WriteObject<T>(T obj)
+		{
+			byte[] objectBytes = obj.SerializeToByteArray();
+			this.stream.Write(BitConverter.GetBytes(objectBytes.Length), 0, 4);
+			this.stream.Write(objectBytes, 0, objectBytes.Length);
+			this.stream.Flush();
 		}
 		
 		public void Write(string message)
@@ -142,6 +152,14 @@ namespace ServerProgram.Communication
 		{
 			this.stream.Close();
 			this.client.Close();
+		}
+
+		public static byte[] Combine(byte[] first, byte[] second)
+		{
+			byte[] ret = new byte[first.Length + second.Length];
+			Buffer.BlockCopy(first, 0, ret, 0, first.Length);
+			Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
+			return ret;
 		}
 	}
 }
