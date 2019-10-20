@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Ergometer.Communication;
 
 namespace Ergometer
@@ -11,11 +12,13 @@ namespace Ergometer
 	{
 		static void Main(string[] args)
 		{
-			ErgoClient client = new ErgoClient();
-			client.Connect("localhost", 5678);
+			//ErgoClient client = new ErgoClient();
+			//client.Connect("localhost", 5678);
+
+            Application.Run(new ClientView());
 
 			Console.ReadKey();
-			client.Disconnect();
+			//client.Disconnect();
 		}
 	}
 }
