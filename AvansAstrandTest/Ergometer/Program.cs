@@ -31,9 +31,12 @@ namespace ErgoConnect
 			Console.WriteLine("Patient weight: ");
 			string patientWeight = Console.ReadLine();
 
+			//Win forms: Save patient data Button
+
 			Program program = new Program("01249", patientName, patientAge, patientGender, patientWeight);
 
 			Console.WriteLine("Start session? (press any key)");
+			//Win forms: Start session button
 			Console.ReadKey();
 			program.client.Write($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>sessionstart<{Tag.EOF.ToString()}>");
 

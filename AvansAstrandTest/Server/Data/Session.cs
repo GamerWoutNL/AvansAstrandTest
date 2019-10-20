@@ -9,6 +9,7 @@ namespace ServerProgram.Data
 	[Serializable]
 	public class Session
 	{
+		public int ElapsedTime { get; set; }
 		public List<DataPoint> HeartrateDataPoints { get; set; }
 		public List<DataPoint> InstantaniousCadenceDataPoints { get; set; }
 
@@ -18,9 +19,6 @@ namespace ServerProgram.Data
 			this.InstantaniousCadenceDataPoints = new List<DataPoint>();
 		}
 
-		public string GetLastData()
-		{
-			return $"<{Tag.HR.ToString()}>{this.HeartrateDataPoints.Last().Data}<{Tag.IC.ToString()}>{this.InstantaniousCadenceDataPoints.Last().Data}<{Tag.EOF.ToString()}>";
-		}
+
 	}
 }

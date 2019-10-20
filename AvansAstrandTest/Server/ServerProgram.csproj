@@ -53,6 +53,7 @@
     <Compile Include="Data\Session.cs" />
     <Compile Include="Data\Tag.cs" />
     <Compile Include="Data\TagDecoder.cs" />
+    <Compile Include="Data\Test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

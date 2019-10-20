@@ -76,8 +76,13 @@ namespace ServerProgram.Communication
 			}
 			else if (action == "sessionstart")
 			{
-				this.Server.CurrentPatient.BeginSession();
+				this.HandleStartSession();
 			}
+		}
+
+		private void HandleStartSession()
+		{
+			this.Server.CurrentPatient.BeginSession();
 		}
 
 		private void HandlePatientLogin(string packet)
@@ -122,11 +127,6 @@ namespace ServerProgram.Communication
 			this.Server.CurrentPatient.AddDataCadence(timestamp, instantaneousCadence);
 
 			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.EOF.ToString()}>");
-		}
-
-		public void SendResistance(int percentage)
-		{
-			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
 		}
 
 		public void Write(string message)

@@ -88,6 +88,18 @@ namespace Client
 			{
 				this.HandleDataPacket(packet);
 			}
+			else if (action == "message")
+			{
+				this.HandleMessage(packet);
+			}
+		}
+
+		private void HandleMessage(string packet)
+		{
+			string message = TagDecoder.GetValueByTag(Tag.DM, packet);
+			Console.WriteLine($"Message: {message}");
+
+			//TODO: Make this visual to the patient
 		}
 
 		private void HandleDataPacket(string packet)

@@ -55,9 +55,19 @@ namespace ServerProgram.Communication
 			this.listener.Stop();
 		}
 
-		public void SavePatients()
+		public void SendResistance(int percentage)
 		{
-			this.Patients.Add(this.CurrentPatient);
+			this.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
+		}
+
+		public void SendMessageToPatient(string message)
+		{
+			this.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>message<{Tag.DM.ToString()}>{message}<{Tag.EOF.ToString()}>");
+		}
+
+		public void SavePatient(Patient patient)
+		{
+			this.Patients.Add(patient);
 			FileIO.WriteToBinaryFile(this.Patients);
 		}
 	}
