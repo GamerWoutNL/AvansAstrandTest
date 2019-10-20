@@ -56,7 +56,6 @@ namespace ServerProgram.Data
 		{
 			this.canAdd = false;
 			this.Sessions.Add(this.CurrentSession);
-			this.Client.Server.Patients.Add(this);
 			this.Client.Server.SavePatients();
 		}
 

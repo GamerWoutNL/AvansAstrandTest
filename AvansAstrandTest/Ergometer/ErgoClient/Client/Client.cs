@@ -71,53 +71,56 @@ namespace Client
 		private void HandlePacket(string packet)
 		{
 			string messageType = TagDecoder.GetValueByTag(Tag.MT, packet);
-			if (messageType == "ergo")
+			if (messageType == "patient")
 			{
-				this.HandleErgoMessage(packet);
+				this.HandlePatientPacket(packet);
 			}
 		}
 
-		private void HandleErgoMessage(string packet)
+		private void HandlePatientPacket(string packet)
 		{
 			string action = TagDecoder.GetValueByTag(Tag.AC, packet);
 			if (action == "resistance")
 			{
 				this.HandleSetResistance(packet);
 			}
-			else if (action == "brake")
+			else if (action == "data")
 			{
-				this.HandleStopSession(packet);
-			}
-			else if (action == "message")
-			{
-				this.HandleDoctorsMessage(packet);
+				this.HandleDataPacket(packet);
 			}
 		}
 
-		private void HandleStopSession(string packet)
+		private void HandleDataPacket(string packet)
 		{
-			//TODO: stop session
-			Console.WriteLine("Please stop session");
+			string pageNumber = TagDecoder.GetValueByTag(Tag.PA, packet);
+
+			if (pageNumber == "page16")
+			{
+				string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
+				Console.WriteLine($"Heart rate: {heartRate}");
+			}
+			else if (pageNumber == "page25")
+			{
+				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
+				Console.WriteLine($"Cadence: {instantaneousCadence}");
+			}
+
+			//TODO: Make this visual to the patient
 		}
-
-		private void HandleDoctorsMessage(string packet)
-		{
-			string message = TagDecoder.GetValueByTag(Tag.DM, packet);
-			Console.WriteLine($"Got a message from the doctor: {message}");
-
-			//TODO: make this visual in the GUI
-		}
-
 
 		private void HandleSetResistance(string packet)
 		{
 			int resistancePercentage = int.Parse(TagDecoder.GetValueByTag(Tag.SR, packet));
+			Console.WriteLine($"Resistance: {resistancePercentage}");
+
 			this.bleConnect.SetResistance(resistancePercentage);
+
+			//TODO: Make this visual to the patient
 		}
 
 		public void Write(string message)
 		{
-            Console.WriteLine(message);
+            //Console.WriteLine(message);
 			byte[] encrypted = Encrypter.Encrypt(message, "password123");
 			this._stream.Write(encrypted, 0, encrypted.Length);
 			this._stream.Flush();

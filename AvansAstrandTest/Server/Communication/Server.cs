@@ -57,6 +57,7 @@ namespace ServerProgram.Communication
 
 		public void SavePatients()
 		{
+			this.Patients.Add(this.CurrentPatient);
 			FileIO.WriteToBinaryFile(this.Patients);
 		}
 	}

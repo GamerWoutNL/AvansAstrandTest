@@ -110,6 +110,8 @@ namespace ServerProgram.Communication
 			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
 
 			this.Server.CurrentPatient.AddDataHeartRate(timestamp, heartRate);
+
+			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.EOF.ToString()}>");
 		}
 
 		private void HandlePatientDataPage25(string packet)
@@ -118,6 +120,13 @@ namespace ServerProgram.Communication
 			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
 
 			this.Server.CurrentPatient.AddDataCadence(timestamp, instantaneousCadence);
+
+			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.EOF.ToString()}>");
+		}
+
+		public void SendResistance(int percentage)
+		{
+			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
 		}
 
 		public void Write(string message)

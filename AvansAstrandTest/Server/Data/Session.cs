@@ -17,5 +17,10 @@ namespace ServerProgram.Data
 			this.HeartrateDataPoints = new List<DataPoint>();
 			this.InstantaniousCadenceDataPoints = new List<DataPoint>();
 		}
+
+		public string GetLastData()
+		{
+			return $"<{Tag.HR.ToString()}>{this.HeartrateDataPoints.Last().Data}<{Tag.IC.ToString()}>{this.InstantaniousCadenceDataPoints.Last().Data}<{Tag.EOF.ToString()}>";
+		}
 	}
 }
