@@ -109,12 +109,14 @@ namespace Client
 			if (pageNumber == "page16")
 			{
 				string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
-				Console.WriteLine($"Heart rate: {heartRate}");
+				Console.WriteLine($"Heart rate: {heartRate} bpm");
 			}
 			else if (pageNumber == "page25")
 			{
 				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
-				Console.WriteLine($"Cadence: {instantaneousCadence}");
+				string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
+				Console.WriteLine($"Cadence: {instantaneousCadence} rpm");
+				Console.WriteLine($"Power: {instantaneousPower} watt");
 			}
 
 			//TODO: Make this visual to the patient

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace ServerProgram.Data
 {
@@ -16,7 +17,10 @@ namespace ServerProgram.Data
 		public Gender Gender { get; set; }
 		public int Weight { get; set; }
 		public Session Session { get; set; }
-		private bool canAdd;
+		public Timer TimerWarmingUp { get; set; }
+		public Timer TimerRealTest { get; set; }
+		public Timer TimerCoolingDown { get; set; }
+		public Test CurrentTest { get; set; }
 
 		public Patient(ServerClient client, string name, int age, string gender, int weight)
 		{
@@ -25,12 +29,20 @@ namespace ServerProgram.Data
 			this.Age = age;
 			this.Gender = gender == "M" ? Gender.Male : Gender.Female;
 			this.Weight = weight;
-			this.canAdd = false;
+			this.CurrentTest = Test.Before;
+
+			this.TimerWarmingUp = new Timer(2 * 60 * 1000);
+			this.TimerRealTest = new Timer(4 * 60 * 1000);
+			this.TimerCoolingDown = new Timer(60 * 1000);
+
+			this.TimerWarmingUp.Elapsed += new ElapsedEventHandler(OnWarmingUpDone);
+			this.TimerRealTest.Elapsed += new ElapsedEventHandler(OnRealTestDone);
+			this.TimerCoolingDown.Elapsed += new ElapsedEventHandler(OnCoolingDownDone);
 		}
 
 		public void AddDataHeartRate(DateTime timestamp, double heartrate)
 		{
-			if (this.canAdd)
+			if (this.CurrentTest == Test.RealTest)
 			{
 				this.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 
@@ -38,12 +50,12 @@ namespace ServerProgram.Data
 			}
 		}
 
-		public void AddDataCadence(DateTime timestamp, double instantaneousCadence)
+		public void AddDataCadenceAndPower(DateTime timestamp, double instantaneousCadence, double instantaneousPower)
 		{
-			if (this.canAdd)
+			if (this.CurrentTest == Test.RealTest)
 			{
 				this.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
-
+				this.Session.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
 				//TODO: Calculations
 			}
 		}
@@ -51,13 +63,34 @@ namespace ServerProgram.Data
 		public void BeginSession()
 		{
 			this.Session = new Session();
-			this.canAdd = true;
+			this.TimerWarmingUp.Start();
+			this.CurrentTest = Test.WarmingUp;
 		}
 
 		public void EndSession()
 		{
-			this.canAdd = false;
 			this.Client.Server.SavePatient(this);
+		}
+
+		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
+		{
+			this.CurrentTest = Test.RealTest;
+			this.TimerRealTest.Start();
+			this.TimerWarmingUp.Stop();
+		}
+
+		private void OnRealTestDone(object sender, ElapsedEventArgs e)
+		{
+			this.CurrentTest = Test.CoolingDown;
+			this.TimerCoolingDown.Start();
+			this.TimerRealTest.Stop();
+		}
+
+		private void OnCoolingDownDone(object sender, ElapsedEventArgs e)
+		{
+			this.CurrentTest = Test.After;
+			this.EndSession();
+			this.TimerCoolingDown.Stop();
 		}
 
 	}

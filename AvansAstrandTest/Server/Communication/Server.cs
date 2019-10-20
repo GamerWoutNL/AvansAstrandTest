@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using ServerProgram.Data;
+using System.Timers;
 
 namespace ServerProgram.Communication
 {
@@ -73,5 +74,6 @@ namespace ServerProgram.Communication
 			this.Patients.Add(patient);
 			FileIO.WriteToBinaryFile(this.Patients);
 		}
+
 	}
 }

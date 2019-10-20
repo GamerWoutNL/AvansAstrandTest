@@ -8,8 +8,10 @@ namespace ServerProgram.Data
 {
 	public enum Test
 	{
-		WarmungUp,
+		Before,
+		WarmingUp,
 		RealTest,
-		CoolingDown
+		CoolingDown,
+		After
 	}
 }

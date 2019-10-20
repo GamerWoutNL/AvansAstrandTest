@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using ServerProgram.Data;
 using System.IO;
+using System.Timers;
 
 namespace ServerProgram.Communication
 {
@@ -123,10 +124,11 @@ namespace ServerProgram.Communication
 		{
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
 			string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
+			string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
 
-			this.Server.CurrentPatient.AddDataCadence(DateTime.Parse(timestamp), double.Parse(instantaneousCadence));
+			this.Server.CurrentPatient.AddDataCadenceAndPower(DateTime.Parse(timestamp), double.Parse(instantaneousCadence), double.Parse(instantaneousPower));
 
-			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.EOF.ToString()}>");
+			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.IP.ToString()}>{instantaneousPower}<{Tag.EOF.ToString()}>");
 		}
 
 		public void Write(string message)
