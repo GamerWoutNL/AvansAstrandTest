@@ -46,7 +46,7 @@ namespace ServerProgram.Data
 			{
 				this.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 
-				//TODO: Calculations
+				//TODO: Calculations and user feedback about the session
 			}
 		}
 
@@ -56,7 +56,8 @@ namespace ServerProgram.Data
 			{
 				this.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
 				this.Session.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
-				//TODO: Calculations
+
+				//TODO: Calculations and user feedback about the session
 			}
 		}
 
