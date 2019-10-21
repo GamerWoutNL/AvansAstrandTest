@@ -24,9 +24,6 @@ namespace ServerProgram.Communication
 		public Test CurrentTest { get; set; }
 		public BoolWrapper BoolWrapper { get; set; }
 
-		// Male:   VO2max = (0.00212 * Workload + 0.299) / (0.769 * Heart Rate - 48.5) x 1000
-		// Female: VO2max = (0.00193 * Workload + 0.326) / (0.769 * Heart Rate - 56.1) x 1000
-
 		public Server(int port)
 		{
 			this.BoolWrapper = new BoolWrapper();
@@ -156,6 +153,20 @@ namespace ServerProgram.Communication
 		{
 			this.SavePatient(this.CurrentPatient);
 			Console.WriteLine("Session is done");
+		}
+
+		public double CalculateVO2Max(double workload, double heartrate)
+		{
+			// Male:   VO2max = (0.00212 * Workload + 0.299) / (0.769 * Heart Rate - 48.5) x 1000
+			// Female: VO2max = (0.00193 * Workload + 0.326) / (0.769 * Heart Rate - 56.1) x 1000
+			if (this.CurrentPatient.Gender == Gender.Male)
+			{
+				return (0.00212 * workload + 0.299) / (0.769 * heartrate - 48.5) * 1000;
+			}
+			else
+			{
+				return (0.00193 * workload + 0.326) / (0.769 * heartrate - 56.1) * 1000;
+			}
 		}
 
 		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
