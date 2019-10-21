@@ -88,7 +88,7 @@ namespace ServerProgram.Communication
 			}
 			else
 			{
-				this.Server.SendDataToSpecialists(this.Server.BoolWrapper.CanAccess);
+				this.Server.SendDataToSpecialists(this.Server.BoolWrapper);
 			}
 		}
 

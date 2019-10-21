@@ -39,6 +39,8 @@ namespace ServerProgram.Communication
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
 
+			this.BoolWrapper.CanAccess = false;
+
 			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
 			//this.TimerRealTest = new Timer(4 * 60 * 1000);
 			//this.TimerCoolingDown = new Timer(60 * 1000);
