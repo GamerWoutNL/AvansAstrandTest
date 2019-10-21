@@ -39,22 +39,31 @@ namespace ServerProgram.Data
 		public static string Decrypt(byte[] cipherText, string key)
 		{
 			string plaintext = null;
-			byte[] keyBytes = GetKeyBytes(key);
 
-			using (AesManaged aes = new AesManaged())
+			try
 			{
-				ICryptoTransform decryptor = aes.CreateDecryptor(keyBytes, IV);
-				using (MemoryStream ms = new MemoryStream(cipherText))
+				byte[] keyBytes = GetKeyBytes(key);
+
+				using (AesManaged aes = new AesManaged())
 				{
-					using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+					ICryptoTransform decryptor = aes.CreateDecryptor(keyBytes, IV);
+					using (MemoryStream ms = new MemoryStream(cipherText))
 					{
-						using (StreamReader reader = new StreamReader(cs))
+						using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
 						{
-							plaintext = reader.ReadToEnd();
+							using (StreamReader reader = new StreamReader(cs))
+							{
+								plaintext = reader.ReadToEnd();
+							}
 						}
 					}
 				}
 			}
+			catch (CryptographicException)
+			{
+				throw;
+			}
+			
 
 			return plaintext;
 		}

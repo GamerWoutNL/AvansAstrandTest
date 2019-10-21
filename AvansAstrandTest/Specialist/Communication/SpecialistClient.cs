@@ -21,7 +21,8 @@ namespace Specialist.Communication
 		public SpecialistClient()
 		{
 			this.client = new TcpClient();
-			this.buffer = new byte[1024];
+			this.buffer = new byte[65536];
+			this.BoolWrapper = new BoolWrapper();
 		}
 
 		public void Connect(string host, int port)
@@ -66,21 +67,18 @@ namespace Specialist.Communication
 			else if (obj is BoolWrapper)
 			{
 				this.BoolWrapper = (BoolWrapper)obj;
+				if (!this.BoolWrapper.CanAccess)
+				{
+					this.RefreshPatients();
+				}
 			}
 		}
+
 
 		public void RefreshPatients()
 		{
-			this.BoolWrapper.CanAccess = false;
-			while (!this.BoolWrapper.CanAccess)
-			{
-				this.GetAccessStatus();
-			}
-		}
-
-		public void GetAccessStatus()
-		{
 			this.Write($"<{Tag.MT.ToString()}>specialist<{Tag.AC.ToString()}>getaccess<{Tag.EOF.ToString()}>");
+			Console.WriteLine("Asked server for patient data");
 		}
 
 		public void Write(string message)
