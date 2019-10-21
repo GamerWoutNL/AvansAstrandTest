@@ -34,9 +34,13 @@ namespace ServerProgram.Communication
 
 			this.CurrentTest = Test.Before;
 
-			this.TimerWarmingUp = new Timer(2 * 60 * 1000);
-			this.TimerRealTest = new Timer(4 * 60 * 1000);
-			this.TimerCoolingDown = new Timer(60 * 1000);
+			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
+			//this.TimerRealTest = new Timer(4 * 60 * 1000);
+			//this.TimerCoolingDown = new Timer(60 * 1000);
+
+			this.TimerWarmingUp = new Timer(15 * 1000);
+			this.TimerRealTest = new Timer(30 * 1000);
+			this.TimerCoolingDown = new Timer(15 * 1000);
 
 			this.TimerWarmingUp.Elapsed += new ElapsedEventHandler(OnWarmingUpDone);
 			this.TimerRealTest.Elapsed += new ElapsedEventHandler(OnRealTestDone);
@@ -112,6 +116,7 @@ namespace ServerProgram.Communication
 
 		public void SavePatient(Patient patient)
 		{
+			Console.WriteLine("Saving data..");
 			this.Patients.Add(patient);
 			FileIO.WriteToBinaryFile(this.Patients);
 		}
@@ -121,11 +126,13 @@ namespace ServerProgram.Communication
 			this.CurrentPatient.Session = new Session();
 			this.TimerWarmingUp.Start();
 			this.CurrentTest = Test.WarmingUp;
+			Console.WriteLine("Session begins");
 		}
 
 		public void EndSession()
 		{
 			this.SavePatient(this.CurrentPatient);
+			Console.WriteLine("Session is done");
 		}
 
 		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
@@ -133,6 +140,7 @@ namespace ServerProgram.Communication
 			this.CurrentTest = Test.RealTest;
 			this.TimerRealTest.Start();
 			this.TimerWarmingUp.Stop();
+			Console.WriteLine("Warming up done");
 		}
 
 		private void OnRealTestDone(object sender, ElapsedEventArgs e)
@@ -140,6 +148,7 @@ namespace ServerProgram.Communication
 			this.CurrentTest = Test.CoolingDown;
 			this.TimerCoolingDown.Start();
 			this.TimerRealTest.Stop();
+			Console.WriteLine("Test done");
 		}
 
 		private void OnCoolingDownDone(object sender, ElapsedEventArgs e)
@@ -147,6 +156,7 @@ namespace ServerProgram.Communication
 			this.CurrentTest = Test.After;
 			this.EndSession();
 			this.TimerCoolingDown.Stop();
+			Console.WriteLine("Cooling down done");
 		}
 	}
 }

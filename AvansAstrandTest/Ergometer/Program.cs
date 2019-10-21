@@ -30,10 +30,12 @@ namespace ErgoConnect
 			string patientGender = Console.ReadLine();
 			Console.WriteLine("Patient weight: ");
 			string patientWeight = Console.ReadLine();
+			Console.WriteLine("Ergo ID: ");
+			string ergoID = Console.ReadLine();
 
 			//Win forms: Save patient data Button
 
-			Program program = new Program("01249", patientName, patientAge, patientGender, patientWeight);
+			Program program = new Program(ergoID, patientName, patientAge, patientGender, patientWeight);
 
 			Console.WriteLine("Start session? (press any key)");
 			//Win forms: Start session button
@@ -60,7 +62,7 @@ namespace ErgoConnect
         public void Create()
 		{
 			Console.WriteLine("No connection with bike, using simulator.");
-			bLESimulator = new BLESimulator(ergoID, client);
+			bLESimulator = new BLESimulator("00100", client);
             new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
 		}
 	}
