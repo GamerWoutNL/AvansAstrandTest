@@ -135,6 +135,11 @@ namespace ServerProgram.Communication
 			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.IP.ToString()}>{instantaneousPower}<{Tag.EOF.ToString()}>");
 		}
 
+		public void SendDataToSpecialist()
+		{
+
+		}
+
 		public void WriteObject<T>(T obj)
 		{
 			byte[] objectBytes = obj.SerializeToByteArray();

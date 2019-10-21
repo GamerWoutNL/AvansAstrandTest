@@ -60,6 +60,11 @@ namespace Specialist.Communication
 			Console.WriteLine(obj);
 		}
 
+		public void GetAccessStatus()
+		{
+			this.Write($"<{Tag.MT.ToString()}>specialist<{Tag.AC.ToString()}>getcanaccess<{Tag.EOF.ToString()}>");
+		}
+
 		public void Write(string message)
 		{
 			byte[] encrypted = Encrypter.Encrypt(message, "password123");
