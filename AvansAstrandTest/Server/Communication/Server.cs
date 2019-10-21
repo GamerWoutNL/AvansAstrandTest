@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using ServerProgram.Data;
+using System.Threading;
+using Timer = System.Timers.Timer;
 using System.Timers;
 
 namespace ServerProgram.Communication
@@ -20,6 +22,7 @@ namespace ServerProgram.Communication
 		public Timer TimerRealTest { get; set; }
 		public Timer TimerCoolingDown { get; set; }
 		public Test CurrentTest { get; set; }
+		public BoolWrapper BoolWrapper { get; set; }
 
 		// Male:   VO2max = (0.00212 * Workload + 0.299) / (0.769 * Heart Rate - 48.5) x 1000
 		// Female: VO2max = (0.00193 * Workload + 0.326) / (0.769 * Heart Rate - 56.1) x 1000
@@ -31,8 +34,8 @@ namespace ServerProgram.Communication
 			this.Clients = new List<ServerClient>();
 			this.Patients = FileIO.ReadFromBinaryFile<List<Patient>>();
 			this.CurrentPatient = null;
-
 			this.CurrentTest = Test.Before;
+			this.BoolWrapper = new BoolWrapper(true);
 
 			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
 			//this.TimerRealTest = new Timer(4 * 60 * 1000);
@@ -116,9 +119,14 @@ namespace ServerProgram.Communication
 
 		public void SavePatient(Patient patient)
 		{
+			this.BoolWrapper.CanAccess = false;
+
 			Console.WriteLine("Saving data..");
 			this.Patients.Add(patient);
 			FileIO.WriteToBinaryFile(this.Patients);
+
+			Thread.Sleep(1000);
+			this.BoolWrapper.CanAccess = true;
 		}
 
 		public void BeginSession()
