@@ -16,7 +16,6 @@ namespace ServerProgram.Communication
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public Patient CurrentPatient { get; set; }
-		public ServerClient PatientClient { get; set; }
 		public Timer TimerWarmingUp { get; set; }
 		public Timer TimerRealTest { get; set; }
 		public Timer TimerCoolingDown { get; set; }
@@ -62,7 +61,13 @@ namespace ServerProgram.Communication
 
 		public void SentToPatient(string message)
 		{
-			this.PatientClient.Write(message);
+			foreach (var client in this.Clients)
+			{
+				if (client.IsPatient)
+				{
+					client.Write(message);
+				}
+			}
 		}
 
 		public void AddDataHeartRate(DateTime timestamp, double heartrate)
@@ -113,14 +118,14 @@ namespace ServerProgram.Communication
 
 		public void BeginSession()
 		{
-			//this.Session = new Session();
+			this.CurrentPatient.Session = new Session();
 			this.TimerWarmingUp.Start();
 			this.CurrentTest = Test.WarmingUp;
 		}
 
 		public void EndSession()
 		{
-			//this.SavePatient(this);
+			this.SavePatient(this.CurrentPatient);
 		}
 
 		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)

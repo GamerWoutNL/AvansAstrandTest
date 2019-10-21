@@ -17,6 +17,7 @@ namespace ServerProgram.Communication
 		private TcpClient client;
 		private NetworkStream stream;
 		private byte[] buffer;
+		public bool IsPatient { get; set; }
 		public Server Server { get; set; }
 
 		public ServerClient(TcpClient client, Server server)
@@ -24,6 +25,7 @@ namespace ServerProgram.Communication
 			this.client = client;
 			this.stream = this.client.GetStream();
 			this.buffer = new byte[1024];
+			this.IsPatient = false;
 			this.Server = server;
 
 			this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
@@ -95,6 +97,7 @@ namespace ServerProgram.Communication
 			string weight = TagDecoder.GetValueByTag(Tag.PWE, packet);
 
 			this.Server.CurrentPatient = new Patient(name, int.Parse(age), gender == "M" ? Gender.Male : Gender.Female, int.Parse(weight));
+			this.IsPatient = true;
 		}
 
 		private void HandlePatientData(string packet)
