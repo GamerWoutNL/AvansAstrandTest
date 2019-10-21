@@ -121,7 +121,7 @@ namespace ServerProgram.Communication
 
 			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
 
-			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.EOF.ToString()}>");
+			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.EOF.ToString()}>");
 		}
 
 		private void HandlePatientDataPage25(string packet)
@@ -132,12 +132,7 @@ namespace ServerProgram.Communication
 
 			this.Server.AddDataCadenceAndPower(DateTime.Parse(timestamp), double.Parse(instantaneousCadence), double.Parse(instantaneousPower));
 
-			this.Server.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.IP.ToString()}>{instantaneousPower}<{Tag.EOF.ToString()}>");
-		}
-
-		public void SendDataToSpecialist()
-		{
-
+			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page25<{Tag.IC.ToString()}>{instantaneousCadence}<{Tag.IP.ToString()}>{instantaneousPower}<{Tag.EOF.ToString()}>");
 		}
 
 		public void WriteObject<T>(T obj)

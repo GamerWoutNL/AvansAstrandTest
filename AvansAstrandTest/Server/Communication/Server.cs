@@ -66,13 +66,24 @@ namespace ServerProgram.Communication
 			this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
 		}
 
-		public void SentToPatient(string message)
+		public void SendToPatient(string message)
 		{
 			foreach (var client in this.Clients)
 			{
 				if (client.IsPatient)
 				{
 					client.Write(message);
+				}
+			}
+		}
+
+		public void SendDataToSpecialists<T>(T obj)
+		{
+			foreach (var client in this.Clients)
+			{
+				if (!client.IsPatient)
+				{
+					client.WriteObject(obj);
 				}
 			}
 		}
@@ -109,12 +120,12 @@ namespace ServerProgram.Communication
 
 		public void SendResistance(int percentage)
 		{
-			this.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
+			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
 		}
 
 		public void SendMessageToPatient(string message)
 		{
-			this.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>message<{Tag.DM.ToString()}>{message}<{Tag.EOF.ToString()}>");
+			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>message<{Tag.DM.ToString()}>{message}<{Tag.EOF.ToString()}>");
 		}
 
 		public void SavePatient(Patient patient)
@@ -127,6 +138,17 @@ namespace ServerProgram.Communication
 
 			Thread.Sleep(1000);
 			this.BoolWrapper.CanAccess = true;
+		}
+
+		public List<Patient> GetPatients()
+		{
+			this.BoolWrapper.CanAccess = false;
+			List<Patient> patients = FileIO.ReadFromBinaryFile<List<Patient>>();
+
+			Thread.Sleep(1000);
+			this.BoolWrapper.CanAccess = true;
+
+			return patients;
 		}
 
 		public void BeginSession()
