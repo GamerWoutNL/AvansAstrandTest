@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Communication\Server.cs" />
     <Compile Include="Communication\ServerClient.cs" />
+    <Compile Include="Data\BoolWrapper.cs" />
     <Compile Include="Data\DataPoint.cs" />
     <Compile Include="Data\Encrypter.cs" />
     <Compile Include="Data\FileIO.cs" />
