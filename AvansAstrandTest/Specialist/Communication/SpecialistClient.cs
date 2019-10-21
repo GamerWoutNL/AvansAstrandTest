@@ -74,11 +74,9 @@ namespace Specialist.Communication
 			}
 		}
 
-
 		public void RefreshPatients()
 		{
 			this.Write($"<{Tag.MT.ToString()}>specialist<{Tag.AC.ToString()}>getaccess<{Tag.EOF.ToString()}>");
-			Console.WriteLine("Asked server for patient data");
 		}
 
 		public void Write(string message)
