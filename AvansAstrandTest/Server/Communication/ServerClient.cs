@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using ServerProgram.Data;
 using System.IO;
 using System.Timers;
+using System.Threading;
 
 namespace ServerProgram.Communication
 {
@@ -24,8 +25,6 @@ namespace ServerProgram.Communication
 			this.stream = this.client.GetStream();
 			this.buffer = new byte[1024];
 			this.Server = server;
-
-			this.WriteObject(new Patient("henk", 34, Gender.Male, 45));
 
 			this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
 		}
@@ -139,6 +138,7 @@ namespace ServerProgram.Communication
 			this.stream.Write(BitConverter.GetBytes(objectBytes.Length), 0, 4);
 			this.stream.Write(objectBytes, 0, objectBytes.Length);
 			this.stream.Flush();
+			Thread.Sleep(1000);
 		}
 		
 		public void Write(string message)

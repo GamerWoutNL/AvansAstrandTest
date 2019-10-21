@@ -39,7 +39,11 @@ namespace Specialist.Communication
 				if (count == 4)
 				{
 					this.length = BitConverter.ToInt32(this.buffer, 0);
-					Console.WriteLine();
+				}
+				else
+				{
+					object obj = this.buffer.SubArray(0, this.length).Deserialize<object>();
+					this.HandleObject(obj);
 				}
 
 				this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
@@ -49,6 +53,11 @@ namespace Specialist.Communication
 				this.Disconnect();
 				Console.WriteLine("Server has shut down");
 			}
+		}
+
+		private void HandleObject(object obj)
+		{
+			Console.WriteLine(obj);
 		}
 
 		public void Write(string message)

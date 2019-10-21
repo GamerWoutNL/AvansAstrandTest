@@ -26,5 +26,9 @@ namespace ServerProgram.Data
 			this.Weight = weight;
 		}
 
+		public override string ToString()
+		{
+			return this.Name;
+		}
 	}
 }
