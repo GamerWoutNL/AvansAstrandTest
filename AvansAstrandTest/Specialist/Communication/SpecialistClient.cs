@@ -71,6 +71,7 @@ namespace Specialist.Communication
 
 		public void RefreshPatients()
 		{
+			this.BoolWrapper.CanAccess = false;
 			while (!this.BoolWrapper.CanAccess)
 			{
 				this.GetAccessStatus();
