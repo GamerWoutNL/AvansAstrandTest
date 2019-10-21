@@ -54,9 +54,10 @@ namespace ServerProgram.Data
 						}
 					}
 				}
-			}
 
-			return plaintext;
+
+				return plaintext;
+			}
 		}
 
 		private static byte[] GetKeyBytes(string key)

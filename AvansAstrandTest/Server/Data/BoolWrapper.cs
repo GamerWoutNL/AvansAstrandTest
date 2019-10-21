@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServerProgram.Data
 {
+	[Serializable]
 	public class BoolWrapper
 	{
 		public bool CanAccess { get; set; }
