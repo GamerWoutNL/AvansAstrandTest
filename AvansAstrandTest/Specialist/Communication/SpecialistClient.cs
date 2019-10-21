@@ -15,6 +15,8 @@ namespace Specialist.Communication
 		private NetworkStream stream;
 		private byte[] buffer;
 		private int length;
+		private BoolWrapper BoolWrapper { get; set; }
+		public List<Patient> Patients { get; set; }
 
 		public SpecialistClient()
 		{
@@ -57,12 +59,27 @@ namespace Specialist.Communication
 
 		private void HandleObject(object obj)
 		{
-			Console.WriteLine(obj);
+			if (obj is List<Patient>)
+			{
+				this.Patients = (List<Patient>)obj;
+			}
+			else if (obj is BoolWrapper)
+			{
+				this.BoolWrapper = (BoolWrapper)obj;
+			}
+		}
+
+		public void RefreshPatients()
+		{
+			while (!this.BoolWrapper.CanAccess)
+			{
+				this.GetAccessStatus();
+			}
 		}
 
 		public void GetAccessStatus()
 		{
-			this.Write($"<{Tag.MT.ToString()}>specialist<{Tag.AC.ToString()}>getcanaccess<{Tag.EOF.ToString()}>");
+			this.Write($"<{Tag.MT.ToString()}>specialist<{Tag.AC.ToString()}>getaccess<{Tag.EOF.ToString()}>");
 		}
 
 		public void Write(string message)

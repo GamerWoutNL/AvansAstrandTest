@@ -64,6 +64,32 @@ namespace ServerProgram.Communication
 			{
 				this.HandlePatientPacket(packet);
 			}
+			else if (messageType == "specialist")
+			{
+				this.HandleSpecialistPacket(packet);
+			}
+		}
+
+		private void HandleSpecialistPacket(string packet)
+		{
+			string action = TagDecoder.GetValueByTag(Tag.AC, packet);
+
+			if (action == "getaccess")
+			{
+				this.HandleGetAccess();
+			}
+		}
+
+		private void HandleGetAccess()
+		{
+			if (this.Server.BoolWrapper.CanAccess)
+			{
+				this.Server.SendDataToSpecialists(this.Server.GetPatients());
+			}
+			else
+			{
+				this.Server.SendDataToSpecialists(this.Server.BoolWrapper.CanAccess);
+			}
 		}
 
 		private void HandlePatientPacket(string packet)

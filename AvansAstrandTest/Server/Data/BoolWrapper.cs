@@ -9,10 +9,5 @@ namespace ServerProgram.Data
 	public class BoolWrapper
 	{
 		public bool CanAccess { get; set; }
-
-		public BoolWrapper(bool canAcces)
-		{
-			this.CanAccess = canAcces;
-		}
 	}
 }

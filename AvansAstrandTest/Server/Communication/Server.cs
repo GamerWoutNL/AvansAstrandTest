@@ -29,13 +29,15 @@ namespace ServerProgram.Communication
 
 		public Server(int port)
 		{
+			this.BoolWrapper = new BoolWrapper();
+			this.BoolWrapper.CanAccess = true;
+
 			FileIO.CreateLogFile();
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
-			this.Patients = FileIO.ReadFromBinaryFile<List<Patient>>();
+			this.Patients = this.GetPatients();
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
-			this.BoolWrapper = new BoolWrapper(true);
 
 			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
 			//this.TimerRealTest = new Timer(4 * 60 * 1000);
