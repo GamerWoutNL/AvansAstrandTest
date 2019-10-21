@@ -14,6 +14,7 @@ namespace Specialist.Communication
 		private TcpClient client;
 		private NetworkStream stream;
 		private byte[] buffer;
+		private int length;
 
 		public SpecialistClient()
 		{
@@ -34,16 +35,17 @@ namespace Specialist.Communication
 			try
 			{
 				int count = this.stream.EndRead(ar);
-				string read = Encrypter.Decrypt(this.buffer.SubArray(0, count), "password123");
 
-				string eof = $"<{Tag.EOF.ToString()}>";
-				while (read.Contains(eof))
+				if (count == 4)
 				{
-					string packet = read.Substring(0, read.IndexOf(eof) + eof.Length);
-					read = read.Substring(packet.IndexOf(eof) + eof.Length);
-
-					this.HandlePacket(packet);
+					this.length = BitConverter.ToInt32(this.buffer, 0);
 				}
+				else
+				{
+					object obj = this.buffer.SubArray(0, this.length).Deserialize<object>();
+					this.HandleObject(obj);
+				}
+
 				this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
 			}
 			catch (IOException)
@@ -53,9 +55,9 @@ namespace Specialist.Communication
 			}
 		}
 
-		private void HandlePacket(string packet)
+		private void HandleObject(object obj)
 		{
-			Console.WriteLine(packet);
+			Console.WriteLine(obj);
 		}
 
 		public void Write(string message)
