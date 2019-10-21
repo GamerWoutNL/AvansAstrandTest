@@ -84,11 +84,11 @@ namespace ServerProgram.Communication
 		{
 			if (this.Server.BoolWrapper.CanAccess)
 			{
-				this.Server.SendDataToSpecialists(this.Server.GetPatients());
+				this.WriteObject(this.Server.GetPatients());
 			}
 			else
 			{
-				this.Server.SendDataToSpecialists(this.Server.BoolWrapper);
+				this.WriteObject(this.Server.BoolWrapper);
 			}
 		}
 

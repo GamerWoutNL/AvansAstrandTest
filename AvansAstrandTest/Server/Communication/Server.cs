@@ -81,17 +81,6 @@ namespace ServerProgram.Communication
 			}
 		}
 
-		public void SendDataToSpecialists<T>(T obj)
-		{
-			foreach (var client in this.Clients)
-			{
-				if (!client.IsPatient)
-				{
-					client.WriteObject(obj);
-				}
-			}
-		}
-
 		public void AddDataHeartRate(DateTime timestamp, double heartrate)
 		{
 			if (this.CurrentTest == Test.RealTest)
