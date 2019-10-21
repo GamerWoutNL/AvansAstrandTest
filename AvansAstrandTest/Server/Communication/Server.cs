@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using ServerProgram.Data;
+using System.Threading;
+using Timer = System.Timers.Timer;
 using System.Timers;
 
 namespace ServerProgram.Communication
@@ -20,18 +22,21 @@ namespace ServerProgram.Communication
 		public Timer TimerRealTest { get; set; }
 		public Timer TimerCoolingDown { get; set; }
 		public Test CurrentTest { get; set; }
+		public BoolWrapper BoolWrapper { get; set; }
 
 		// Male:   VO2max = (0.00212 * Workload + 0.299) / (0.769 * Heart Rate - 48.5) x 1000
 		// Female: VO2max = (0.00193 * Workload + 0.326) / (0.769 * Heart Rate - 56.1) x 1000
 
 		public Server(int port)
 		{
+			this.BoolWrapper = new BoolWrapper();
+			this.BoolWrapper.CanAccess = true;
+
 			FileIO.CreateLogFile();
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
-			this.Patients = FileIO.ReadFromBinaryFile<List<Patient>>();
+			this.Patients = this.GetPatients();
 			this.CurrentPatient = null;
-
 			this.CurrentTest = Test.Before;
 
 			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
@@ -63,13 +68,24 @@ namespace ServerProgram.Communication
 			this.listener.BeginAcceptTcpClient(new AsyncCallback(OnConnect), null);
 		}
 
-		public void SentToPatient(string message)
+		public void SendToPatient(string message)
 		{
 			foreach (var client in this.Clients)
 			{
 				if (client.IsPatient)
 				{
 					client.Write(message);
+				}
+			}
+		}
+
+		public void SendDataToSpecialists<T>(T obj)
+		{
+			foreach (var client in this.Clients)
+			{
+				if (!client.IsPatient)
+				{
+					client.WriteObject(obj);
 				}
 			}
 		}
@@ -106,19 +122,35 @@ namespace ServerProgram.Communication
 
 		public void SendResistance(int percentage)
 		{
-			this.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
+			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
 		}
 
 		public void SendMessageToPatient(string message)
 		{
-			this.SentToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>message<{Tag.DM.ToString()}>{message}<{Tag.EOF.ToString()}>");
+			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>message<{Tag.DM.ToString()}>{message}<{Tag.EOF.ToString()}>");
 		}
 
 		public void SavePatient(Patient patient)
 		{
+			this.BoolWrapper.CanAccess = false;
+
 			Console.WriteLine("Saving data..");
 			this.Patients.Add(patient);
 			FileIO.WriteToBinaryFile(this.Patients);
+
+			Thread.Sleep(1000);
+			this.BoolWrapper.CanAccess = true;
+		}
+
+		public List<Patient> GetPatients()
+		{
+			this.BoolWrapper.CanAccess = false;
+			List<Patient> patients = FileIO.ReadFromBinaryFile<List<Patient>>();
+
+			Thread.Sleep(1000);
+			this.BoolWrapper.CanAccess = true;
+
+			return patients;
 		}
 
 		public void BeginSession()

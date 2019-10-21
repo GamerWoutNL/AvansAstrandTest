@@ -15,11 +15,14 @@ namespace Specialist.Communication
 		private NetworkStream stream;
 		private byte[] buffer;
 		private int length;
+		private BoolWrapper BoolWrapper { get; set; }
+		public List<Patient> Patients { get; set; }
 
 		public SpecialistClient()
 		{
 			this.client = new TcpClient();
-			this.buffer = new byte[1024];
+			this.buffer = new byte[65536];
+			this.BoolWrapper = new BoolWrapper();
 		}
 
 		public void Connect(string host, int port)
@@ -57,7 +60,23 @@ namespace Specialist.Communication
 
 		private void HandleObject(object obj)
 		{
-			Console.WriteLine(obj);
+			if (obj is List<Patient>)
+			{
+				this.Patients = (List<Patient>)obj;
+			}
+			else if (obj is BoolWrapper)
+			{
+				this.BoolWrapper = (BoolWrapper)obj;
+				if (!this.BoolWrapper.CanAccess)
+				{
+					this.RefreshPatients();
+				}
+			}
+		}
+
+		public void RefreshPatients()
+		{
+			this.Write($"<{Tag.MT.ToString()}>specialist<{Tag.AC.ToString()}>getaccess<{Tag.EOF.ToString()}>");
 		}
 
 		public void Write(string message)

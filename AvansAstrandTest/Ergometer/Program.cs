@@ -62,7 +62,7 @@ namespace ErgoConnect
         public void Create()
 		{
 			Console.WriteLine("No connection with bike, using simulator.");
-			bLESimulator = new BLESimulator("00100", client);
+			bLESimulator = new BLESimulator("01249", client);
             new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
 		}
 	}
