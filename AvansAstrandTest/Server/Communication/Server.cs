@@ -18,6 +18,7 @@ namespace ServerProgram.Communication
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public Patient CurrentPatient { get; set; }
+		public TestLogics TestLogics { get; set; }
 		public Timer TimerWarmingUp { get; set; }
 		public Timer TimerRealTest { get; set; }
 		public Timer TimerCoolingDown { get; set; }
@@ -34,6 +35,7 @@ namespace ServerProgram.Communication
 			this.Clients = new List<ServerClient>();
 			this.Patients = this.GetPatients();
 			this.CurrentPatient = null;
+			this.TestLogics = new TestLogics(this);
 			this.CurrentTest = Test.Before;
 
 			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
@@ -78,22 +80,22 @@ namespace ServerProgram.Communication
 
 		public void AddDataHeartRate(DateTime timestamp, double heartrate)
 		{
-			if (this.CurrentTest == Test.RealTest)
+			if (this.CurrentTest == Test.WarmingUp || this.CurrentTest == Test.RealTest || this.CurrentTest == Test.CoolingDown)
 			{
 				this.CurrentPatient.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
-
-				//TODO: Calculations and user feedback about the session
+				this.TestLogics.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 			}
 		}
 
 		public void AddDataCadenceAndPower(DateTime timestamp, double instantaneousCadence, double instantaneousPower)
 		{
-			if (this.CurrentTest == Test.RealTest)
+			if (this.CurrentTest == Test.WarmingUp || this.CurrentTest == Test.RealTest || this.CurrentTest == Test.CoolingDown)
 			{
 				this.CurrentPatient.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
 				this.CurrentPatient.Session.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
-
-				//TODO: Calculations and user feedback about the session
+				
+				this.TestLogics.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
+				this.TestLogics.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
 			}
 		}
 
