@@ -28,22 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.NameComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.SessionComboBox = new System.Windows.Forms.ComboBox();
             this.LoadSessionButton = new System.Windows.Forms.Button();
             this.GetSessionsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // comboBox1
+            // NameComboBox
             // 
-            this.comboBox1.Font = new System.Drawing.Font("Microsoft Tai Le", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(111, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(205, 31);
-            this.comboBox1.TabIndex = 1;
+            this.NameComboBox.Font = new System.Drawing.Font("Microsoft Tai Le", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.NameComboBox.FormattingEnabled = true;
+            this.NameComboBox.Location = new System.Drawing.Point(111, 19);
+            this.NameComboBox.Name = "NameComboBox";
+            this.NameComboBox.Size = new System.Drawing.Size(205, 29);
+            this.NameComboBox.TabIndex = 1;
+            this.NameComboBox.DropDown += new System.EventHandler(this.NameComboBox_DropDown);
+            this.NameComboBox.SelectedIndexChanged += new System.EventHandler(this.NameComboBox_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -51,7 +53,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Tai Le", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(32, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 23);
+            this.label1.Size = new System.Drawing.Size(68, 22);
             this.label1.TabIndex = 2;
             this.label1.Text = "Patient:";
             // 
@@ -61,18 +63,18 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Tai Le", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(345, 24);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 23);
+            this.label2.Size = new System.Drawing.Size(59, 22);
             this.label2.TabIndex = 3;
             this.label2.Text = "Sessie:";
             // 
-            // comboBox2
+            // SessionComboBox
             // 
-            this.comboBox2.Font = new System.Drawing.Font("Microsoft Tai Le", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(416, 21);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(224, 31);
-            this.comboBox2.TabIndex = 4;
+            this.SessionComboBox.Font = new System.Drawing.Font("Microsoft Tai Le", 12.22642F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SessionComboBox.FormattingEnabled = true;
+            this.SessionComboBox.Location = new System.Drawing.Point(416, 21);
+            this.SessionComboBox.Name = "SessionComboBox";
+            this.SessionComboBox.Size = new System.Drawing.Size(224, 29);
+            this.SessionComboBox.TabIndex = 4;
             // 
             // LoadSessionButton
             // 
@@ -84,6 +86,7 @@
             this.LoadSessionButton.TabIndex = 5;
             this.LoadSessionButton.Text = "Laad de sessie";
             this.LoadSessionButton.UseVisualStyleBackColor = true;
+            this.LoadSessionButton.Click += new System.EventHandler(this.LoadSessionButton_Click);
             // 
             // GetSessionsButton
             // 
@@ -95,6 +98,7 @@
             this.GetSessionsButton.TabIndex = 7;
             this.GetSessionsButton.Text = "Vernieuw sessie\'s";
             this.GetSessionsButton.UseVisualStyleBackColor = true;
+            this.GetSessionsButton.Click += new System.EventHandler(this.GetSessionsButton_Click);
             // 
             // DokterView
             // 
@@ -103,10 +107,10 @@
             this.ClientSize = new System.Drawing.Size(697, 113);
             this.Controls.Add(this.GetSessionsButton);
             this.Controls.Add(this.LoadSessionButton);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.SessionComboBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.NameComboBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "DokterView";
             this.Text = "DokterView";
@@ -116,10 +120,10 @@
         }
 
         #endregion
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox NameComboBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox SessionComboBox;
         private System.Windows.Forms.Button LoadSessionButton;
         private System.Windows.Forms.Button GetSessionsButton;
     }

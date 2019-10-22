@@ -14,6 +14,10 @@ namespace Specialist
 			SpecialistClient client = new SpecialistClient();
 			client.Connect("localhost", 5678);
 
+            DokterView dokterView = new DokterView(client);
+            client.AttachPatientReceivedCallback(dokterView);
+            dokterView.ShowDialog();
+
 			Console.ReadKey();
 			client.Disconnect();
 		}
