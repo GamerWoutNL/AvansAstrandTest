@@ -31,7 +31,6 @@ namespace ServerProgram.Communication
 		public Test CurrentTest { get; set; }
 		public BoolWrapper BoolWrapper { get; set; }
 		public int CurrentResistance { get; set; }
-		public double AverageHeartrate { get; set; }
 
 		public Server(int port)
 		{
@@ -47,7 +46,6 @@ namespace ServerProgram.Communication
 			this.CurrentTest = Test.Before;
 			this.oneMinuteCount = 0;
 			this.CurrentResistance = 0;
-			this.AverageHeartrate = -1.0;
 			this.readHR = false;
 			this.setResistance = false;
 
@@ -69,7 +67,6 @@ namespace ServerProgram.Communication
 
 			this.TimerResistanceFiveSec.Elapsed += new ElapsedEventHandler(OnResistanceFiveSecDone);
 		}
-
 
 		public void Start()
 		{
@@ -106,15 +103,6 @@ namespace ServerProgram.Communication
 
 				if (this.readHR)
 				{
-					if (this.AverageHeartrate == -1)
-					{
-						this.AverageHeartrate = heartrate;
-					}
-					else
-					{
-						this.AverageHeartrate = (this.AverageHeartrate + heartrate) / 2.0;
-					}
-
 					this.Heartrates.Add(heartrate);
 					Console.WriteLine($"Heartrate: {heartrate}");
 					this.readHR = false;
@@ -217,6 +205,13 @@ namespace ServerProgram.Communication
 			}
 		}
 
+		public bool IsSteadyState(List<double> values)
+		{
+			double[] lastThreeValues = values.ToArray().SubArray(values.Count - 3, 3);
+
+			return (lastThreeValues.Max() - lastThreeValues.Min()) < 5;
+		}
+
 		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
 		{
 			this.CurrentTest = Test.RealTest;
@@ -233,12 +228,19 @@ namespace ServerProgram.Communication
 			this.TimerCoolingDown.Start();
 			this.TimerRealTest.Stop();
 			this.TimerHRFifteenSec.Stop();
+
+			this.Heartrates.ForEach(Console.WriteLine);
+
+			this.SendResistance(10);
 			Console.WriteLine("Test done");
 		}
 
 		private void OnCoolingDownDone(object sender, ElapsedEventArgs e)
 		{
 			this.CurrentTest = Test.After;
+
+
+
 			this.EndSession();
 
 			this.TimerCoolingDown.Stop();
