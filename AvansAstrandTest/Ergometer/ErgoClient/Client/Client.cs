@@ -28,7 +28,7 @@ namespace Client
 			this.totalBuffer = string.Empty;
 		}
 
-        public void attachMessageCallback(MessageCallback messageCallback)
+        public void AttachMessageCallback(MessageCallback messageCallback)
         {
             this.messageCallback = messageCallback;
         }
@@ -98,6 +98,15 @@ namespace Client
 			{
 				this.HandleMessage(packet);
 			}
+			else if (action == "sessionstart")
+			{
+				this.HandleSessionStart();
+			}
+		}
+
+		private void HandleSessionStart()
+		{
+			this.messageCallback.StartTimers();
 		}
 
 		private void HandleMessage(string packet)

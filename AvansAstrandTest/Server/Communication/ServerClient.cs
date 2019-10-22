@@ -115,6 +115,7 @@ namespace ServerProgram.Communication
 		private void HandleStartSession()
 		{
 			this.Server.BeginSession();
+			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>sessionstart<{Tag.EOF.ToString()}>");
 		}
 
 		private void HandlePatientLogin(string packet)

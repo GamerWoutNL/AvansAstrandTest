@@ -13,5 +13,6 @@ namespace ErgoConnect
         void ResistanceReceived(string message);
         void PowerReceived(string message);
         void HeartrateReceived(string message);
+		void StartTimers();
     }
 }

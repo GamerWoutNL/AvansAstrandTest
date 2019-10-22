@@ -32,7 +32,7 @@ namespace ErgoConnect
             //Win forms: Start session 
             program.client.Write($"<{ServerProgram.Data.Tag.MT.ToString()}>patient<{ServerProgram.Data.Tag.AC.ToString()}>sessionstart<{ServerProgram.Data.Tag.EOF.ToString()}>");
             ActiveWorkoutView workoutView = new ActiveWorkoutView();
-            program.client.attachMessageCallback(workoutView);
+            program.client.AttachMessageCallback(workoutView);
             workoutView.ShowDialog();
             this.Close();
         }
