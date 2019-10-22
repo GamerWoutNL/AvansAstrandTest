@@ -15,6 +15,13 @@ namespace Ergometer
         public ActiveWorkoutView()
         {
             InitializeComponent();
+            WarmingUpView warmingUpView = this.warmingUpView1;
+            TestView testView = this.testView1;
+
+
+            warmingUpView.AttachStateCallback(testView);
+
+
         }
     }
 }

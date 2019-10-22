@@ -40,7 +40,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Tai Le", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(115, 30);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 34);
+            this.label1.Size = new System.Drawing.Size(185, 38);
             this.label1.TabIndex = 0;
             this.label1.Text = "Warming Up";
             // 
@@ -58,7 +58,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(185, 129);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(24, 13);
+            this.label2.Size = new System.Drawing.Size(27, 15);
             this.label2.TabIndex = 2;
             this.label2.Text = "Tijd";
             // 
@@ -67,6 +67,7 @@
             this.backgroundWorker1.WorkerReportsProgress = true;
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // WarmingUpView
             // 
@@ -76,7 +77,7 @@
             this.Controls.Add(this.WarmupProgressBar);
             this.Controls.Add(this.label1);
             this.Name = "WarmingUpView";
-            this.Size = new System.Drawing.Size(412, 189);
+            this.Size = new System.Drawing.Size(410, 200);
             this.ResumeLayout(false);
             this.PerformLayout();
 

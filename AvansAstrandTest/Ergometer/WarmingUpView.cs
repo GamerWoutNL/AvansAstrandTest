@@ -13,10 +13,16 @@ namespace Ergometer
 {
     public partial class WarmingUpView : UserControl
     {
+        private StateCallback stateCallback;
         public WarmingUpView()
         {
             InitializeComponent();
             backgroundWorker1.RunWorkerAsync();
+        }
+
+        public void AttachStateCallback(StateCallback stateCallback)
+        {
+            this.stateCallback = stateCallback;
         }
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -34,8 +40,9 @@ namespace Ergometer
             WarmupProgressBar.Value = e.ProgressPercentage;
         }
 
-        
-
-
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.stateCallback.EndState();
+        }
     }
 }

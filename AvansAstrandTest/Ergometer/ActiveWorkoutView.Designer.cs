@@ -34,16 +34,16 @@
             // 
             // warmingUpView1
             // 
-            this.warmingUpView1.Location = new System.Drawing.Point(55, 144);
+            this.warmingUpView1.Location = new System.Drawing.Point(40, 47);
             this.warmingUpView1.Name = "warmingUpView1";
             this.warmingUpView1.Size = new System.Drawing.Size(412, 189);
             this.warmingUpView1.TabIndex = 0;
             // 
             // testView1
             // 
-            this.testView1.Location = new System.Drawing.Point(473, 69);
+            this.testView1.Location = new System.Drawing.Point(426, 47);
             this.testView1.Name = "testView1";
-            this.testView1.Size = new System.Drawing.Size(480, 302);
+            this.testView1.Size = new System.Drawing.Size(410, 203);
             this.testView1.TabIndex = 1;
             // 
             // ActiveWorkoutView

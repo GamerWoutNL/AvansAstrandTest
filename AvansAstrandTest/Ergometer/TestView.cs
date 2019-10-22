@@ -11,11 +11,22 @@ using System.Threading;
 
 namespace Ergometer
 {
-    public partial class TestView : UserControl
+    public partial class TestView : UserControl, StateCallback
     {
+        private StateCallback stateCallback;
         public TestView()
         {
             InitializeComponent();
+        }
+
+        public void AttachStateCallback(StateCallback stateCallback)
+        {
+            this.stateCallback = stateCallback;
+        }
+
+        public void EndState()
+        {
+            this.backgroundWorker1.RunWorkerAsync();
         }
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
