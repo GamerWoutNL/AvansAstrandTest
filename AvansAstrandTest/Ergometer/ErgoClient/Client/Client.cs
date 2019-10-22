@@ -119,17 +119,17 @@ namespace Client
 			if (pageNumber == "page16")
 			{
 				string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
-                messageCallback.HeartrateReceived(heartRate);
+				if (this.messageCallback != null) messageCallback.HeartrateReceived(heartRate);
 				string resistance = TagDecoder.GetValueByTag(Tag.SR, packet);
-				messageCallback.ResistanceReceived(resistance);
+				if (this.messageCallback != null) messageCallback.ResistanceReceived(resistance);
 				Console.WriteLine($"Heart rate: {heartRate} bpm");
 			}
 			else if (pageNumber == "page25")
 			{
 				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
-                messageCallback.CadenceReceived(instantaneousCadence);
+				if (this.messageCallback != null) messageCallback.CadenceReceived(instantaneousCadence);
 				string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
-				messageCallback.PowerReceived(instantaneousPower);
+				if (this.messageCallback != null) messageCallback.PowerReceived(instantaneousPower);
 				Console.WriteLine($"\t\tCadence: {instantaneousCadence} rpm");
 				Console.WriteLine($"\t\t\t\tPower: {instantaneousPower} watt");
 			}

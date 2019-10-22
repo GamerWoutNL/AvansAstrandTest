@@ -51,7 +51,7 @@ namespace ServerProgram.Communication
 			this.readHR = false;
 			this.setResistance = false;
 
-			this.TimerWarmingUp = new Timer(2 * 5 * 1000);
+			this.TimerWarmingUp = new Timer(2 * 60 * 1000);
 			this.TimerRealTest = new Timer(4 * 60 * 1000);
 			this.TimerCoolingDown = new Timer(60 * 1000);
 
@@ -140,6 +140,10 @@ namespace ServerProgram.Communication
 				else if (instantaneousCadence > 60)
 				{
 					this.SendMessageToPatient("Fiets zachter");
+				}
+				else
+				{
+					this.SendMessageToPatient("");
 				}
 			}
 		}

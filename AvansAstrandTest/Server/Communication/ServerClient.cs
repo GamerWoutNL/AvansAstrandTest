@@ -148,7 +148,6 @@ namespace ServerProgram.Communication
 			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
 
 			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.SR.ToString()}>{this.Server.CurrentResistance}<{Tag.EOF.ToString()}>");
-			Console.WriteLine($"Send res: {this.Server.CurrentResistance}");
 		}
 
 		private void HandlePatientDataPage25(string packet)
