@@ -120,6 +120,8 @@ namespace Client
 			{
 				string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
                 messageCallback.HeartrateReceived(heartRate);
+				string resistance = TagDecoder.GetValueByTag(Tag.SR, packet);
+				messageCallback.ResistanceReceived(resistance);
 				Console.WriteLine($"Heart rate: {heartRate} bpm");
 			}
 			else if (pageNumber == "page25")
@@ -127,9 +129,9 @@ namespace Client
 				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
                 messageCallback.CadenceReceived(instantaneousCadence);
 				string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
+				messageCallback.PowerReceived(instantaneousPower);
 				Console.WriteLine($"\t\tCadence: {instantaneousCadence} rpm");
 				Console.WriteLine($"\t\t\t\tPower: {instantaneousPower} watt");
-                messageCallback.PowerReceived(instantaneousPower);
 			}
 
 			//TODO: Make this visual to the patient
