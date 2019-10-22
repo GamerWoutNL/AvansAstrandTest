@@ -16,6 +16,8 @@ namespace ServerProgram.Communication
 	{
 		private TcpListener listener;
 		private int oneMinuteCount;
+		private bool readHR;
+		private bool setResistance;
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public Patient CurrentPatient { get; set; }
@@ -23,7 +25,8 @@ namespace ServerProgram.Communication
 		public Timer TimerRealTest { get; set; }
 		public Timer TimerCoolingDown { get; set; }
 		public Timer TimerHROneMinute { get; set; }
-		public Timer TimerHRFifteenSeconds { get; set; }
+		public Timer TimerHRFifteenSec { get; set; }
+		public Timer TimerResistanceFiveSec { get; set; }
 		public Test CurrentTest { get; set; }
 		public BoolWrapper BoolWrapper { get; set; }
 		public int CurrentResistance { get; set; }
@@ -40,21 +43,29 @@ namespace ServerProgram.Communication
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
 			this.oneMinuteCount = 0;
+			this.CurrentResistance = 0;
+			this.readHR = false;
+			this.setResistance = false;
 
-			this.TimerWarmingUp = new Timer(2 * 60 * 1000);
+			this.TimerWarmingUp = new Timer(1 * 60 * 1000);
 			this.TimerRealTest = new Timer(4 * 60 * 1000);
 			this.TimerCoolingDown = new Timer(60 * 1000);
 
 			this.TimerHROneMinute = new Timer(60 * 1000);
-			this.TimerHRFifteenSeconds = new Timer(15 * 1000);
+			this.TimerHRFifteenSec = new Timer(15 * 1000);
+
+			this.TimerResistanceFiveSec = new Timer(5 * 1000);
 
 			this.TimerWarmingUp.Elapsed += new ElapsedEventHandler(OnWarmingUpDone);
 			this.TimerRealTest.Elapsed += new ElapsedEventHandler(OnRealTestDone);
 			this.TimerCoolingDown.Elapsed += new ElapsedEventHandler(OnCoolingDownDone);
 
 			this.TimerHROneMinute.Elapsed += new ElapsedEventHandler(OnHROneMinuteDone);
-			this.TimerHRFifteenSeconds.Elapsed += new ElapsedEventHandler(OnHRFifteenSecondsDone);
+			this.TimerHRFifteenSec.Elapsed += new ElapsedEventHandler(OnHRFifteenSecondsDone);
+
+			this.TimerResistanceFiveSec.Elapsed += new ElapsedEventHandler(OnResistanceFiveSecDone);
 		}
+
 
 		public void Start()
 		{
@@ -89,7 +100,17 @@ namespace ServerProgram.Communication
 			{
 				this.CurrentPatient.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 
+				if (this.readHR)
+				{
+					Console.WriteLine(heartrate);
+					this.readHR = false;
+				}
 
+				if (this.CurrentTest == Test.RealTest && heartrate < 130 && this.setResistance)
+				{
+					this.SendResistance(this.CurrentResistance + 5);
+					this.setResistance = false;
+				}
 			}
 		}
 
@@ -115,6 +136,10 @@ namespace ServerProgram.Communication
 
 		public void SendResistance(int percentage)
 		{
+			if (percentage > 100)
+			{
+				percentage = 100;
+			}
 			this.CurrentResistance = percentage;
 			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
 		}
@@ -153,7 +178,7 @@ namespace ServerProgram.Communication
 			this.TimerWarmingUp.Start();
 			this.CurrentTest = Test.WarmingUp;
 
-			this.SendResistance(10);
+			this.SendResistance(this.CurrentResistance + 10);
 			Console.WriteLine("Session begins");
 		}
 
@@ -182,6 +207,7 @@ namespace ServerProgram.Communication
 			this.CurrentTest = Test.RealTest;
 			this.TimerRealTest.Start();
 			this.TimerHROneMinute.Start();
+			this.TimerResistanceFiveSec.Start();
 			this.TimerWarmingUp.Stop();
 			Console.WriteLine("Warming up done");
 		}
@@ -191,7 +217,7 @@ namespace ServerProgram.Communication
 			this.CurrentTest = Test.CoolingDown;
 			this.TimerCoolingDown.Start();
 			this.TimerRealTest.Stop();
-			this.TimerHRFifteenSeconds.Stop();
+			this.TimerHRFifteenSec.Stop();
 			Console.WriteLine("Test done");
 		}
 
@@ -207,19 +233,27 @@ namespace ServerProgram.Communication
 		private void OnHRFifteenSecondsDone(object sender, ElapsedEventArgs e)
 		{
 			Console.WriteLine("Fifteen seconds past");
+			this.readHR = true;
 		}
 
 		private void OnHROneMinuteDone(object sender, ElapsedEventArgs e)
 		{
+			this.readHR = true;
+
 			this.oneMinuteCount++;
 
 			if (this.oneMinuteCount == 2)
 			{
 				this.TimerHROneMinute.Stop();
-				this.TimerHRFifteenSeconds.Start();
+				this.TimerHRFifteenSec.Start();
 			}
 
 			Console.WriteLine("One minute past");
+		}
+
+		private void OnResistanceFiveSecDone(object sender, ElapsedEventArgs e)
+		{
+			this.setResistance = true;
 		}
 	}
 }
