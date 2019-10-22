@@ -11,13 +11,14 @@ using System.IO;
 
 namespace Client
 {
-    class Client : IClient
+    public class Client : IClient
     {
 		private TcpClient _tcpClient;
         private NetworkStream _stream;
 		private byte[] _buffer;
 		private string totalBuffer;
 		private string _ergoID;
+        public MessageCallback messageCallback;
 		public BLEConnect bleConnect { get; set; }
 
 		public Client()
@@ -26,6 +27,11 @@ namespace Client
 			this._buffer = new byte[1024];
 			this.totalBuffer = string.Empty;
 		}
+
+        public void attachMessageCallback(MessageCallback messageCallback)
+        {
+            this.messageCallback = messageCallback;
+        }
 
 		public void Connect(string server, int port, string ergoID)
 		{
@@ -97,6 +103,10 @@ namespace Client
 		private void HandleMessage(string packet)
 		{
 			string message = TagDecoder.GetValueByTag(Tag.DM, packet);
+            if(this.messageCallback != null)
+            {
+                messageCallback.MessageReceived(message);
+            }
 			Console.WriteLine($"Message: {message}");
 
 			//TODO: Make this visual to the patient
@@ -109,12 +119,15 @@ namespace Client
 			if (pageNumber == "page16")
 			{
 				string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
+                messageCallback.HeartrateReceived(heartRate);
 				Console.WriteLine($"Heart rate: {heartRate} bpm");
 			}
 			else if (pageNumber == "page25")
 			{
 				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
+                messageCallback.CadenceReceived(instantaneousCadence);
 				string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
+                messageCallback.PowerReceived(instantaneousPower);
 				Console.WriteLine($"Cadence: {instantaneousCadence} rpm");
 				Console.WriteLine($"Power: {instantaneousPower} watt");
 			}

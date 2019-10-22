@@ -15,35 +15,15 @@ namespace ErgoConnect
     /// </summary>
     public class Program : ISim
     {
-		private Client.Client client;
+		public Client.Client client { get; set; }
 		private string ergoID;
 		public BLEConnect ergo;
         public BLESimulator bLESimulator;
 
 		static void Main(string[] args)
         {
-            Console.WriteLine("Patient name: ");
-            string patientName = Console.ReadLine();
-            Console.WriteLine("Patient age: ");
-            string patientAge = Console.ReadLine();
-			Console.WriteLine("Patient gender (M/F): ");
-			string patientGender = Console.ReadLine();
-			Console.WriteLine("Patient weight: ");
-			string patientWeight = Console.ReadLine();
-			Console.WriteLine("Ergo ID: ");
-			string ergoID = Console.ReadLine();
-
-			//Win forms: Save patient data Button
-
-			Program program = new Program(ergoID, patientName, patientAge, patientGender, patientWeight);
-
-			Console.WriteLine("Start session? (press any key)");
-			//Win forms: Start session button
-			Console.ReadKey();
-			program.client.Write($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>sessionstart<{Tag.EOF.ToString()}>");
-
-			Console.ReadKey();
-			program.client.Disconnect();
+            LogInView logInView = new LogInView();
+            logInView.ShowDialog();
 		}
 
 		public Program(string ergoID, string patientName, string patientAge, string patientGender, string patientWeight)
