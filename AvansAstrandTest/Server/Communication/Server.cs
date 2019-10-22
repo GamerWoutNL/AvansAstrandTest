@@ -109,7 +109,8 @@ namespace ServerProgram.Communication
 					if (this.AverageHeartrate == -1)
 					{
 						this.AverageHeartrate = heartrate;
-					} else
+					}
+					else
 					{
 						this.AverageHeartrate = (this.AverageHeartrate + heartrate) / 2.0;
 					}
