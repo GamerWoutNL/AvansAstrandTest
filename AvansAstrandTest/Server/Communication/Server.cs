@@ -20,6 +20,7 @@ namespace ServerProgram.Communication
 		private bool setResistance;
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
+		public List<double> Heartrates { get; set; }
 		public Patient CurrentPatient { get; set; }
 		public Timer TimerWarmingUp { get; set; }
 		public Timer TimerRealTest { get; set; }
@@ -30,6 +31,7 @@ namespace ServerProgram.Communication
 		public Test CurrentTest { get; set; }
 		public BoolWrapper BoolWrapper { get; set; }
 		public int CurrentResistance { get; set; }
+		public double AverageHeartrate { get; set; }
 
 		public Server(int port)
 		{
@@ -39,15 +41,17 @@ namespace ServerProgram.Communication
 			FileIO.CreateLogFile();
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
+			this.Heartrates = new List<double>();
 			this.Patients = this.GetPatients();
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
 			this.oneMinuteCount = 0;
 			this.CurrentResistance = 0;
+			this.AverageHeartrate = -1.0;
 			this.readHR = false;
 			this.setResistance = false;
 
-			this.TimerWarmingUp = new Timer(1 * 60 * 1000);
+			this.TimerWarmingUp = new Timer(2 * 5 * 1000);
 			this.TimerRealTest = new Timer(4 * 60 * 1000);
 			this.TimerCoolingDown = new Timer(60 * 1000);
 
@@ -102,7 +106,16 @@ namespace ServerProgram.Communication
 
 				if (this.readHR)
 				{
-					Console.WriteLine(heartrate);
+					if (this.AverageHeartrate == -1)
+					{
+						this.AverageHeartrate = heartrate;
+					} else
+					{
+						this.AverageHeartrate = (this.AverageHeartrate + heartrate) / 2.0;
+					}
+
+					this.Heartrates.Add(heartrate);
+					Console.WriteLine($"Heartrate: {heartrate}");
 					this.readHR = false;
 				}
 
@@ -138,8 +151,9 @@ namespace ServerProgram.Communication
 		{
 			if (percentage > 100)
 			{
-				percentage = 100;
+				return;
 			}
+
 			this.CurrentResistance = percentage;
 			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
 		}
