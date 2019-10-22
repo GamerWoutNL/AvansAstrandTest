@@ -21,6 +21,7 @@ namespace ServerProgram.Communication
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public List<double> Heartrates { get; set; }
+		public List<double> Watts { get; set; }
 		public Patient CurrentPatient { get; set; }
 		public Timer TimerWarmingUp { get; set; }
 		public Timer TimerRealTest { get; set; }
@@ -41,6 +42,7 @@ namespace ServerProgram.Communication
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
 			this.Heartrates = new List<double>();
+			this.Watts = new List<double>();
 			this.Patients = this.GetPatients();
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
@@ -101,6 +103,11 @@ namespace ServerProgram.Communication
 			{
 				this.CurrentPatient.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 
+				if (heartrate > 220 - this.CurrentPatient.Age)
+				{
+					//Emergency stop
+				}
+
 				if (this.readHR)
 				{
 					this.Heartrates.Add(heartrate);
@@ -113,6 +120,7 @@ namespace ServerProgram.Communication
 					this.SendResistance(this.CurrentResistance + 5);
 					this.setResistance = false;
 				}
+
 			}
 		}
 
@@ -122,8 +130,17 @@ namespace ServerProgram.Communication
 			{
 				this.CurrentPatient.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
 				this.CurrentPatient.Session.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
-				
 
+				this.Watts.Add(instantaneousPower);
+
+				if (instantaneousCadence < 50)
+				{
+					this.SendMessageToPatient("Fiets harder");
+				}
+				else if (instantaneousCadence > 60)
+				{
+					this.SendMessageToPatient("Fiets zachter");
+				}
 			}
 		}
 
@@ -207,9 +224,76 @@ namespace ServerProgram.Communication
 
 		public bool IsSteadyState(List<double> values)
 		{
-			double[] lastThreeValues = values.ToArray().SubArray(values.Count - 3, 3);
-
+			double[] lastThreeValues = values.ToArray().SubArray(values.Count - 4, 4);
 			return (lastThreeValues.Max() - lastThreeValues.Min()) < 5;
+		}
+
+		public double GetAverageHeartrate(List<double> values)
+		{
+			double[] lastTwoMinutesValues = values.ToArray().SubArray(values.Count - 8, 8);
+
+			return this.Average(lastTwoMinutesValues);
+		}
+
+		public double GetAverageWatts(List<double> values)
+		{
+			double[] tempValues = values.ToArray().SubArray(values.Count - 8, 8);
+
+			return this.Average(tempValues);
+		}
+
+		public double GetMultiplier(int age)
+		{
+			if (age >= 15 && age < 25)
+			{
+				return 1.1;
+			}
+			else if (age >= 25 && age < 35)
+			{
+				return 1.0;
+			}
+			else if (age >= 35 && age < 40)
+			{
+				return 0.87;
+			}
+			else if (age >= 40 && age < 45)
+			{
+				return 0.83;
+			}
+			else if (age >= 45 && age < 50)
+			{
+				return 0.78;
+			}
+			else if (age >= 50 && age < 55)
+			{
+				return 0.75;
+			}
+			else if (age >= 55 && age < 60)
+			{
+				return 0.71;
+			}
+			else if (age >= 60 && age < 65)
+			{
+				return 0.68;
+			}
+			else if (age >= 65)
+			{
+				return 0.65;
+			}
+
+
+			return 0.0;
+		}
+
+		public double Average(double[] values)
+		{
+			double total = 0.0;
+
+			foreach (double v in values)
+			{
+				total += v;
+			}
+			return total / values.Length;
 		}
 
 		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
@@ -239,9 +323,21 @@ namespace ServerProgram.Communication
 		{
 			this.CurrentTest = Test.After;
 
+			if (this.IsSteadyState(this.Heartrates))
+			{
+				this.SendMessageToPatient("Steady state bereikt");
 
+				double averageHeartrate = this.GetAverageHeartrate(this.Heartrates);
+				double averagePower = this.GetAverageWatts(this.Watts);
 
-			this.EndSession();
+				this.CurrentPatient.Session.VO2Max = this.GetMultiplier(this.CurrentPatient.Age) * this.CalculateVO2Max(averagePower, averageHeartrate);
+
+				this.EndSession();
+			}
+			else
+			{
+				this.SendMessageToPatient("Steady state niet bereikt, fiets opnieuw.");
+			}
 
 			this.TimerCoolingDown.Stop();
 			Console.WriteLine("Cooling down done");
