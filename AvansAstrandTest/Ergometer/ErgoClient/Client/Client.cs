@@ -127,9 +127,9 @@ namespace Client
 				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
                 messageCallback.CadenceReceived(instantaneousCadence);
 				string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
+				Console.WriteLine($"\t\tCadence: {instantaneousCadence} rpm");
+				Console.WriteLine($"\t\t\t\tPower: {instantaneousPower} watt");
                 messageCallback.PowerReceived(instantaneousPower);
-				Console.WriteLine($"Cadence: {instantaneousCadence} rpm");
-				Console.WriteLine($"Power: {instantaneousPower} watt");
 			}
 
 			//TODO: Make this visual to the patient

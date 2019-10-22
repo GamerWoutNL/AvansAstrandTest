@@ -84,11 +84,11 @@ namespace ServerProgram.Communication
 		{
 			if (this.Server.BoolWrapper.CanAccess)
 			{
-				this.Server.SendDataToSpecialists(this.Server.GetPatients());
+				this.WriteObject(this.Server.GetPatients());
 			}
 			else
 			{
-				this.Server.SendDataToSpecialists(this.Server.BoolWrapper);
+				this.WriteObject(this.Server.BoolWrapper);
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace ServerProgram.Communication
 
 			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
 
-			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.EOF.ToString()}>");
+			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.SR.ToString()}>{this.Server.CurrentResistance}<{Tag.EOF.ToString()}>");
 		}
 
 		private void HandlePatientDataPage25(string packet)
