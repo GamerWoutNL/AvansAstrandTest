@@ -108,8 +108,6 @@ namespace Client
                 messageCallback.MessageReceived(message);
             }
 			Console.WriteLine($"Message: {message}");
-
-			//TODO: Make this visual to the patient
 		}
 
 		private void HandleDataPacket(string packet)
@@ -134,7 +132,6 @@ namespace Client
 				Console.WriteLine($"\t\t\t\tPower: {instantaneousPower} watt");
 			}
 
-			//TODO: Make this visual to the patient
 		}
 
 		private void HandleSetResistance(string packet)
@@ -143,8 +140,6 @@ namespace Client
 			Console.WriteLine($"Resistance: {resistancePercentage}");
 
 			this.bleConnect.SetResistance(resistancePercentage);
-
-			//TODO: Make this visual to the patient
 		}
 
 		public void Write(string message)
