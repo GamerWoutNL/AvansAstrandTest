@@ -15,7 +15,6 @@ namespace ServerProgram.Communication
 	public class Server
 	{
 		private TcpListener listener;
-		private int resistance;
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public Patient CurrentPatient { get; set; }
@@ -34,11 +33,8 @@ namespace ServerProgram.Communication
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
 			this.Patients = this.GetPatients();
-			this.resistance = 0;
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
-
-			this.BoolWrapper.CanAccess = false;
 
 			//this.TimerWarmingUp = new Timer(2 * 60 * 1000);
 			//this.TimerRealTest = new Timer(4 * 60 * 1000);
@@ -148,6 +144,7 @@ namespace ServerProgram.Communication
 			this.CurrentPatient.Session = new Session();
 			this.TimerWarmingUp.Start();
 			this.CurrentTest = Test.WarmingUp;
+
 			this.SendResistance(10);
 			Console.WriteLine("Session begins");
 		}
