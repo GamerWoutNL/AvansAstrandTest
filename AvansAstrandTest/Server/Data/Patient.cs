@@ -28,7 +28,7 @@ namespace ServerProgram.Data
 
 		public override string ToString()
 		{
-			return this.Name;
+			return $"Session at {this.Session.HeartrateDataPoints.Last().Time.ToString("d MMM yyyy HH:mm:ss")}";
 		}
 	}
 }

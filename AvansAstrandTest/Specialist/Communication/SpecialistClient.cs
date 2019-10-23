@@ -15,6 +15,7 @@ namespace Specialist.Communication
 		private NetworkStream stream;
 		private byte[] buffer;
 		private int length;
+        private PatientReceivedCallback callback;
 		public List<Patient> Patients { get; set; }
 
 		public SpecialistClient()
@@ -32,6 +33,11 @@ namespace Specialist.Communication
 
 			this.RefreshPatients();
 		}
+
+        public void AttachPatientReceivedCallback(PatientReceivedCallback callback)
+        {
+            this.callback = callback;
+        }
 
 		private void OnRead(IAsyncResult ar)
 		{
@@ -63,6 +69,7 @@ namespace Specialist.Communication
 			if (obj is List<Patient>)
 			{
 				this.Patients = (List<Patient>)obj;
+                if (this.callback != null) this.callback.PatientsReceived();
 			}
 			else if (obj is BoolWrapper boolWrapper)
 			{
