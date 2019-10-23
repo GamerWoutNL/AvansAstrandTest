@@ -65,7 +65,23 @@ namespace Specialist_WPF
             
         }
 
-        private void NameComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        public void PatientsReceived()
+        {
+            UpdateNamesInNameBox();
+        }
+
+        private void ReloadSessionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Client.RefreshPatients();
+        }
+
+        private void LoadSessionButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            SessionWindow session1 = new SessionWindow(this.SessionComboBox.SelectedItem as Patient);
+            session1.ShowDialog();
+        }
+
+        private void NameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Dispatcher.Invoke(() => this.SessionComboBox.Items.Clear());
             string SelectedName = this.NameComboBox.SelectedItem.ToString();
@@ -74,27 +90,9 @@ namespace Specialist_WPF
             {
                 if (patient.Name == SelectedName)
                 {
-                    Dispatcher.Invoke(() =>this.SessionComboBox.Items.Add(patient));
+                    Dispatcher.Invoke(() => this.SessionComboBox.Items.Add(patient));
                 }
             }
-        }
-
-        private void GetSessionsButton_Click(object sender, EventArgs e)
-        {
-            this.Client.RefreshPatients();
-
-        }
-
-        public void PatientsReceived()
-        {
-            UpdateNamesInNameBox();
-        }
-
-        private void LoadSessionButton_Click(object sender, EventArgs e)
-        {
-            SessionWindow session1 = new SessionWindow(this.SessionComboBox.SelectedItem as Patient);
-            session1.ShowDialog();
-            
         }
     }
 }
