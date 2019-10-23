@@ -44,7 +44,12 @@ namespace Specialist_WPF
                 {
                     patientNames.Add(patientData.Name);
                 }
-                this.PatientNamesWithData.Add(patientData.Name, patientData);
+
+				if (!PatientNamesWithData.Keys.Contains(patientData.Name))
+				{
+					this.PatientNamesWithData.Add(patientData.Name, patientData);
+				}
+                
             }
 
             return patientNames;
