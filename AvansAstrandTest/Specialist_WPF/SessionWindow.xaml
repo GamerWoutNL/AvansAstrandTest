@@ -12,8 +12,8 @@
         <Label Content="AgeLabel" x:Name="AgeLabel" HorizontalAlignment="Left" Margin="24,34,0,0" VerticalAlignment="Top"/>
         <Label Content="GenderLabel" x:Name="GenderLabel" HorizontalAlignment="Left" Margin="162,34,0,0" VerticalAlignment="Top"/>
         <Label Content="WeightLabel" x:Name="WeightLabel" HorizontalAlignment="Left" Margin="298,34,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.228,1.013"/>
-        <Label Content="VO2Label" x:Name="VO2Label" HorizontalAlignment="Left" Margin="274,386,0,0" VerticalAlignment="Top"/>
-        <Label Content="SteadyStateLabel" x:Name="SteadyStateLabel" HorizontalAlignment="Left" Margin="440,386,0,0" VerticalAlignment="Top"/>
+        <Label Content="VO2Label" x:Name="VO2Label" HorizontalAlignment="Left" Margin="286,391,0,4" VerticalAlignment="Bottom"/>
+        <Label Content="SteadyStateLabel" x:Name="SteadyStateLabel" HorizontalAlignment="Left" Margin="440,386,0,0" VerticalAlignment="Bottom"/>
         <lvc:CartesianChart Margin="10,76,10.453,34.226" x:Name="Chart" ></lvc:CartesianChart>
     </Grid>
 </Window>

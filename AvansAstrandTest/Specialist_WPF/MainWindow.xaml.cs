@@ -89,14 +89,15 @@ namespace Specialist_WPF
         private void NameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Dispatcher.Invoke(() => this.SessionComboBox.Items.Clear());
-            string SelectedName = this.NameComboBox.SelectedItem.ToString();
+            //string SelectedName = this.NameComboBox.SelectedItem.ToString();
 
             foreach (Patient patient in PatientNamesWithData.Values)
             {
-                if (patient.Name == SelectedName)
-                {
-                    Dispatcher.Invoke(() => this.SessionComboBox.Items.Add(patient));
-                }
+				Dispatcher.Invoke(() => this.SessionComboBox.Items.Add(patient));
+				//if (patient.Name == SelectedName)
+    //            {
+    //                Dispatcher.Invoke(() => this.SessionComboBox.Items.Add(patient));
+    //            }
             }
         }
     }

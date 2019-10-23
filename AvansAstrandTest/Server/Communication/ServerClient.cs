@@ -18,6 +18,8 @@ namespace ServerProgram.Communication
 		private NetworkStream stream;
 		private byte[] buffer;
 		private Random random;
+		private int counter;
+		private double heartreatetemp;
 		public bool IsPatient { get; set; }
 		public Server Server { get; set; }
 
@@ -29,6 +31,8 @@ namespace ServerProgram.Communication
 			this.random = new Random();
 			this.IsPatient = false;
 			this.Server = server;
+			this.heartreatetemp = 90;
+			this.counter = 0;
 
 			this.stream.BeginRead(this.buffer, 0, this.buffer.Length, new AsyncCallback(OnRead), null);
 		}
@@ -147,11 +151,22 @@ namespace ServerProgram.Communication
 		private void HandlePatientDataPage16(string packet)
 		{
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
+
 			//double heartRate = double.Parse(TagDecoder.GetValueByTag(Tag.HR, packet));
-			double heartRate = this.random.Next(128, 132);
+
+			double heartRate = this.heartreatetemp;
+			if (this.counter % 12 == 0)
+			{
+				if (this.heartreatetemp < 133)
+				{
+					this.heartreatetemp = this.heartreatetemp + 1;
+					heartRate = this.heartreatetemp;
+				}
+			}
+			
 
 			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), heartRate);
-
+			this.counter++;
 			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.SR.ToString()}>{this.Server.CurrentResistance}<{Tag.EOF.ToString()}>");
 		}
 
