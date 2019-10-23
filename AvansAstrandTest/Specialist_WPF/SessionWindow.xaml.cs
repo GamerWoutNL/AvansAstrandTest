@@ -42,14 +42,22 @@ namespace Specialist_WPF
 
             DateTime firstRecorderTime = this.patient.Session.HeartrateDataPoints.First().Time;
             ChartValues<ObservablePoint> HeartratePoints = new ChartValues<ObservablePoint>();
-            foreach (DataPoint dataPoint in patient.Session.HeartrateDataPoints) HeartratePoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
+            foreach (DataPoint dataPoint in patient.Session.HeartrateDataPoints)
+            {
+                if ((dataPoint.Time - firstRecorderTime).TotalSeconds % 5 == 0) HeartratePoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
+            }
 
             ChartValues<ObservablePoint> CadencePoints = new ChartValues<ObservablePoint>();
-            foreach (DataPoint dataPoint in patient.Session.InstantaniousCadenceDataPoints) CadencePoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
+            foreach (DataPoint dataPoint in patient.Session.InstantaniousCadenceDataPoints)
+            {
+                if ((dataPoint.Time - firstRecorderTime).TotalSeconds % 5 == 0) CadencePoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
+            }
 
             ChartValues<ObservablePoint> PowerPoints = new ChartValues<ObservablePoint>();
-            foreach (DataPoint dataPoint in patient.Session.InstantaniousPowerDataPoints) PowerPoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
-
+            foreach (DataPoint dataPoint in patient.Session.InstantaniousPowerDataPoints)
+            {
+                if((dataPoint.Time - firstRecorderTime).TotalSeconds % 5 == 0) PowerPoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
+            }
             this.Chart.Series = new LiveCharts.SeriesCollection
             {
                 new LineSeries
