@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ergometer", "Ergometer\Ergo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerProgram", "Server\ServerProgram.csproj", "{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specialist", "Specialist\Specialist.csproj", "{535221F4-89D7-4441-A675-ED0714B38372}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specialist_WPF", "Specialist_WPF\Specialist_WPF.csproj", "{DEAD5640-B8FB-477E-80D9-A9611CF4969D}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3441579-FDB4-490A-AE54-5DD5B9C9E3BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{535221F4-89D7-4441-A675-ED0714B38372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{535221F4-89D7-4441-A675-ED0714B38372}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{535221F4-89D7-4441-A675-ED0714B38372}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{535221F4-89D7-4441-A675-ED0714B38372}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DEAD5640-B8FB-477E-80D9-A9611CF4969D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DEAD5640-B8FB-477E-80D9-A9611CF4969D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEAD5640-B8FB-477E-80D9-A9611CF4969D}.Release|Any CPU.ActiveCfg = Release|Any CPU
