@@ -218,11 +218,11 @@ namespace ServerProgram.Communication
 			double averageHeartrate = this.GetAverageHeartrate(this.Heartrates);
 			double averagePower = this.GetAverageWatts(this.Watts);
 
-			this.CurrentPatient.Session.VO2Max = this.GetMultiplier(this.CurrentPatient.Age) * this.CalculateVO2Max(averagePower, averageHeartrate);
+			this.CurrentPatient.Session.VO2Max = Math.Round(this.GetMultiplier(this.CurrentPatient.Age) * this.CalculateVO2Max(averagePower, averageHeartrate), 2, MidpointRounding.AwayFromZero);
 
 			if (this.IsSteadyState(this.Heartrates))
 			{
-				this.SendMessageToPatient($"Steady state. VO2 max: {Math.Round(this.CurrentPatient.Session.VO2Max, 2, MidpointRounding.AwayFromZero)} ml/kg/min");
+				this.SendMessageToPatient($"Steady state. VO2 max: {this.CurrentPatient.Session.VO2Max} ml/kg/min");
 				this.CurrentPatient.Session.SteadyState = true;
 			}
 			else
