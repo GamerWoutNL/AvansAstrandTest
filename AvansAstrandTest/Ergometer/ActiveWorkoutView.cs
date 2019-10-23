@@ -19,8 +19,6 @@ namespace ErgoConnect
             this.WarmingUpTestState.Initialize("Warming Up", 2, this.InTestStateView);
             this.InTestStateView.Initialize("In Test", 4, this.CoolingDownTestState);
             this.CoolingDownTestState.Initialize("Cooling Down", 1, null);
-
-            this.WarmingUpTestState.StartState();
         }
 
         public void MessageReceived(string message)
@@ -67,5 +65,10 @@ namespace ErgoConnect
             }
             this.HeartrateLabel.Text = $"Hartslag: {message} slagen per minuut";
         }
-    }
+
+		public void StartTimers()
+		{
+			this.WarmingUpTestState.StartState();
+		}
+	}
 }

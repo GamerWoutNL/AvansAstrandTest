@@ -13,6 +13,7 @@ namespace ServerProgram.Data
 		public List<DataPoint> InstantaniousCadenceDataPoints { get; set; }
 		public List<DataPoint> InstantaniousPowerDataPoints { get; set; }
 		public double VO2Max { get; set; }
+		public bool SteadyState { get; set; }
 
 		public Session()
 		{

@@ -18,9 +18,11 @@ namespace ServerProgram.Communication
 		private int oneMinuteCount;
 		private bool readHR;
 		private bool setResistance;
+		private bool setResistanceMk2;
 		public List<ServerClient> Clients { get; set; }
 		public List<Patient> Patients { get; set; }
 		public List<double> Heartrates { get; set; }
+		public List<double> Watts { get; set; }
 		public Patient CurrentPatient { get; set; }
 		public Timer TimerWarmingUp { get; set; }
 		public Timer TimerRealTest { get; set; }
@@ -41,6 +43,7 @@ namespace ServerProgram.Communication
 			this.listener = new TcpListener(IPAddress.Any, port);
 			this.Clients = new List<ServerClient>();
 			this.Heartrates = new List<double>();
+			this.Watts = new List<double>();
 			this.Patients = this.GetPatients();
 			this.CurrentPatient = null;
 			this.CurrentTest = Test.Before;
@@ -48,8 +51,9 @@ namespace ServerProgram.Communication
 			this.CurrentResistance = 0;
 			this.readHR = false;
 			this.setResistance = false;
+			this.setResistanceMk2 = true;
 
-			this.TimerWarmingUp = new Timer(2 * 5 * 1000);
+			this.TimerWarmingUp = new Timer(2 * 60 * 1000);
 			this.TimerRealTest = new Timer(4 * 60 * 1000);
 			this.TimerCoolingDown = new Timer(60 * 1000);
 
@@ -101,18 +105,28 @@ namespace ServerProgram.Communication
 			{
 				this.CurrentPatient.Session.HeartrateDataPoints.Add(new DataPoint(timestamp, heartrate));
 
+				if (heartrate > 220 - this.CurrentPatient.Age)
+				{
+					this.SendMessageToPatient("HARTSLAG TE HOOG, ga van de fiets af");
+				}
+
 				if (this.readHR)
 				{
 					this.Heartrates.Add(heartrate);
-					Console.WriteLine($"Heartrate: {heartrate}");
 					this.readHR = false;
 				}
 
-				if (this.CurrentTest == Test.RealTest && heartrate < 130 && this.setResistance)
+				if (heartrate >= 130)
+				{
+					this.setResistanceMk2 = false;
+				}
+
+				if (this.CurrentTest == Test.RealTest && heartrate < 130 && this.setResistance && this.setResistanceMk2)
 				{
 					this.SendResistance(this.CurrentResistance + 5);
 					this.setResistance = false;
 				}
+
 			}
 		}
 
@@ -122,8 +136,21 @@ namespace ServerProgram.Communication
 			{
 				this.CurrentPatient.Session.InstantaniousCadenceDataPoints.Add(new DataPoint(timestamp, instantaneousCadence));
 				this.CurrentPatient.Session.InstantaniousPowerDataPoints.Add(new DataPoint(timestamp, instantaneousPower));
-				
 
+				this.Watts.Add(instantaneousPower);
+
+				if (instantaneousCadence < 50)
+				{
+					this.SendMessageToPatient("Fiets harder");
+				}
+				else if (instantaneousCadence > 60)
+				{
+					this.SendMessageToPatient("Fiets zachter");
+				}
+				else
+				{
+					this.SendMessageToPatient("");
+				}
 			}
 		}
 
@@ -145,6 +172,7 @@ namespace ServerProgram.Communication
 
 			this.CurrentResistance = percentage;
 			this.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>resistance<{Tag.SR.ToString()}>{percentage}<{Tag.EOF.ToString()}>");
+			this.SendMessageToPatient($"Resistance naar {percentage}% gezet");
 		}
 
 		public void SendMessageToPatient(string message)
@@ -187,8 +215,22 @@ namespace ServerProgram.Communication
 
 		public void EndSession()
 		{
+			double averageHeartrate = this.GetAverageHeartrate(this.Heartrates);
+			double averagePower = this.GetAverageWatts(this.Watts);
+
+			this.CurrentPatient.Session.VO2Max = this.GetMultiplier(this.CurrentPatient.Age) * this.CalculateVO2Max(averagePower, averageHeartrate);
+
+			if (this.IsSteadyState(this.Heartrates))
+			{
+				this.SendMessageToPatient($"Steady state. VO2 max: {Math.Round(this.CurrentPatient.Session.VO2Max, 2, MidpointRounding.AwayFromZero)} ml/kg/min");
+				this.CurrentPatient.Session.SteadyState = true;
+			}
+			else
+			{
+				this.SendMessageToPatient($"Geen steady state. VO2 max: {Math.Round(this.CurrentPatient.Session.VO2Max, 2, MidpointRounding.AwayFromZero)} ml/kg/min");
+				this.CurrentPatient.Session.SteadyState = true;
+			}
 			this.SavePatient(this.CurrentPatient);
-			Console.WriteLine("Session is done");
 		}
 
 		public double CalculateVO2Max(double workload, double heartrate)
@@ -207,9 +249,76 @@ namespace ServerProgram.Communication
 
 		public bool IsSteadyState(List<double> values)
 		{
-			double[] lastThreeValues = values.ToArray().SubArray(values.Count - 3, 3);
-
+			double[] lastThreeValues = values.ToArray().SubArray(values.Count - 4, 4);
 			return (lastThreeValues.Max() - lastThreeValues.Min()) < 5;
+		}
+
+		public double GetAverageHeartrate(List<double> values)
+		{
+			double[] lastTwoMinutesValues = values.ToArray().SubArray(values.Count - 8, 8);
+
+			return this.Average(lastTwoMinutesValues);
+		}
+
+		public double GetAverageWatts(List<double> values)
+		{
+			double[] tempValues = values.ToArray().SubArray(values.Count - 8, 8);
+
+			return this.Average(tempValues);
+		}
+
+		public double GetMultiplier(int age)
+		{
+			if (age >= 15 && age < 25)
+			{
+				return 1.1;
+			}
+			else if (age >= 25 && age < 35)
+			{
+				return 1.0;
+			}
+			else if (age >= 35 && age < 40)
+			{
+				return 0.87;
+			}
+			else if (age >= 40 && age < 45)
+			{
+				return 0.83;
+			}
+			else if (age >= 45 && age < 50)
+			{
+				return 0.78;
+			}
+			else if (age >= 50 && age < 55)
+			{
+				return 0.75;
+			}
+			else if (age >= 55 && age < 60)
+			{
+				return 0.71;
+			}
+			else if (age >= 60 && age < 65)
+			{
+				return 0.68;
+			}
+			else if (age >= 65)
+			{
+				return 0.65;
+			}
+
+
+			return 0.0;
+		}
+
+		public double Average(double[] values)
+		{
+			double total = 0.0;
+
+			foreach (double v in values)
+			{
+				total += v;
+			}
+			return total / values.Length;
 		}
 
 		private void OnWarmingUpDone(object sender, ElapsedEventArgs e)
@@ -219,7 +328,7 @@ namespace ServerProgram.Communication
 			this.TimerHROneMinute.Start();
 			this.TimerResistanceFiveSec.Start();
 			this.TimerWarmingUp.Stop();
-			Console.WriteLine("Warming up done");
+			Console.WriteLine("Warming up is done");
 		}
 
 		private void OnRealTestDone(object sender, ElapsedEventArgs e)
@@ -232,24 +341,19 @@ namespace ServerProgram.Communication
 			this.Heartrates.ForEach(Console.WriteLine);
 
 			this.SendResistance(10);
-			Console.WriteLine("Test done");
+			Console.WriteLine("Test is done");
 		}
 
 		private void OnCoolingDownDone(object sender, ElapsedEventArgs e)
 		{
 			this.CurrentTest = Test.After;
-
-
-
 			this.EndSession();
-
 			this.TimerCoolingDown.Stop();
-			Console.WriteLine("Cooling down done");
+			Console.WriteLine("Cooling down is done");
 		}
 
 		private void OnHRFifteenSecondsDone(object sender, ElapsedEventArgs e)
 		{
-			Console.WriteLine("Fifteen seconds past");
 			this.readHR = true;
 		}
 
@@ -264,8 +368,6 @@ namespace ServerProgram.Communication
 				this.TimerHROneMinute.Stop();
 				this.TimerHRFifteenSec.Start();
 			}
-
-			Console.WriteLine("One minute past");
 		}
 
 		private void OnResistanceFiveSecDone(object sender, ElapsedEventArgs e)

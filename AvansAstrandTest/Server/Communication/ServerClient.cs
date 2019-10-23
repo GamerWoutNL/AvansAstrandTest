@@ -17,6 +17,7 @@ namespace ServerProgram.Communication
 		private TcpClient client;
 		private NetworkStream stream;
 		private byte[] buffer;
+		private Random random;
 		public bool IsPatient { get; set; }
 		public Server Server { get; set; }
 
@@ -25,6 +26,7 @@ namespace ServerProgram.Communication
 			this.client = client;
 			this.stream = this.client.GetStream();
 			this.buffer = new byte[1024];
+			this.random = new Random();
 			this.IsPatient = false;
 			this.Server = server;
 
@@ -36,9 +38,10 @@ namespace ServerProgram.Communication
 			try
 			{
 				int count = this.stream.EndRead(ar);
-				string read = Encrypter.Decrypt(this.buffer.SubArray(0, count), "password123");
+				//string read = Encrypter.Decrypt(this.buffer.SubArray(0, count), "password123");
+                string read = Encoding.ASCII.GetString(this.buffer, 0, count);
 
-				string eof = $"<{Tag.EOF.ToString()}>";
+                string eof = $"<{Tag.EOF.ToString()}>";
 				while (read.Contains(eof))
 				{
 					string packet = read.Substring(0, read.IndexOf(eof) + eof.Length);
@@ -113,6 +116,7 @@ namespace ServerProgram.Communication
 		private void HandleStartSession()
 		{
 			this.Server.BeginSession();
+			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>sessionstart<{Tag.EOF.ToString()}>");
 		}
 
 		private void HandlePatientLogin(string packet)
@@ -143,12 +147,12 @@ namespace ServerProgram.Communication
 		private void HandlePatientDataPage16(string packet)
 		{
 			string timestamp = TagDecoder.GetValueByTag(Tag.TS, packet);
-			string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
+			//double heartRate = double.Parse(TagDecoder.GetValueByTag(Tag.HR, packet));
+			double heartRate = this.random.Next(128, 132);
 
-			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), double.Parse(heartRate));
+			this.Server.AddDataHeartRate(DateTime.Parse(timestamp), heartRate);
 
 			this.Server.SendToPatient($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>data<{Tag.PA.ToString()}>page16<{Tag.HR.ToString()}>{heartRate}<{Tag.SR.ToString()}>{this.Server.CurrentResistance}<{Tag.EOF.ToString()}>");
-			Console.WriteLine($"Send res: {this.Server.CurrentResistance}");
 		}
 
 		private void HandlePatientDataPage25(string packet)
@@ -173,8 +177,9 @@ namespace ServerProgram.Communication
 		
 		public void Write(string message)
 		{
-			byte[] encrypted = Encrypter.Encrypt(message, "password123");
-			this.stream.Write(encrypted, 0, encrypted.Length);
+            //byte[] encrypted = Encrypter.Encrypt(message, "password123");
+            //this.stream.Write(encrypted, 0, encrypted.Length);
+            this.stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
 			this.stream.Flush();
 		}
 

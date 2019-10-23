@@ -28,7 +28,7 @@ namespace Client
 			this.totalBuffer = string.Empty;
 		}
 
-        public void attachMessageCallback(MessageCallback messageCallback)
+        public void AttachMessageCallback(MessageCallback messageCallback)
         {
             this.messageCallback = messageCallback;
         }
@@ -53,7 +53,8 @@ namespace Client
 			try
 			{
 				int count = this._stream.EndRead(ar);
-				this.totalBuffer += Encrypter.Decrypt(this._buffer.SubArray(0, count), "password123");
+                //this.totalBuffer += Encrypter.Decrypt(this._buffer.SubArray(0, count), "password123");
+                this.totalBuffer += Encoding.ASCII.GetString(this._buffer, 0, count);
 
 				string eof = $"<{Tag.EOF.ToString()}>";
 				while (totalBuffer.Contains(eof))
@@ -98,6 +99,15 @@ namespace Client
 			{
 				this.HandleMessage(packet);
 			}
+			else if (action == "sessionstart")
+			{
+				this.HandleSessionStart();
+			}
+		}
+
+		private void HandleSessionStart()
+		{
+			this.messageCallback.StartTimers();
 		}
 
 		private void HandleMessage(string packet)
@@ -108,8 +118,6 @@ namespace Client
                 messageCallback.MessageReceived(message);
             }
 			Console.WriteLine($"Message: {message}");
-
-			//TODO: Make this visual to the patient
 		}
 
 		private void HandleDataPacket(string packet)
@@ -119,22 +127,21 @@ namespace Client
 			if (pageNumber == "page16")
 			{
 				string heartRate = TagDecoder.GetValueByTag(Tag.HR, packet);
-                messageCallback.HeartrateReceived(heartRate);
+				if (this.messageCallback != null) messageCallback.HeartrateReceived(heartRate);
 				string resistance = TagDecoder.GetValueByTag(Tag.SR, packet);
-				messageCallback.ResistanceReceived(resistance);
+				if (this.messageCallback != null) messageCallback.ResistanceReceived(resistance);
 				Console.WriteLine($"Heart rate: {heartRate} bpm");
 			}
 			else if (pageNumber == "page25")
 			{
 				string instantaneousCadence = TagDecoder.GetValueByTag(Tag.IC, packet);
-                messageCallback.CadenceReceived(instantaneousCadence);
+				if (this.messageCallback != null) messageCallback.CadenceReceived(instantaneousCadence);
 				string instantaneousPower = TagDecoder.GetValueByTag(Tag.IP, packet);
-				messageCallback.PowerReceived(instantaneousPower);
+				if (this.messageCallback != null) messageCallback.PowerReceived(instantaneousPower);
 				Console.WriteLine($"\t\tCadence: {instantaneousCadence} rpm");
 				Console.WriteLine($"\t\t\t\tPower: {instantaneousPower} watt");
 			}
 
-			//TODO: Make this visual to the patient
 		}
 
 		private void HandleSetResistance(string packet)
@@ -143,16 +150,15 @@ namespace Client
 			Console.WriteLine($"Resistance: {resistancePercentage}");
 
 			this.bleConnect.SetResistance(resistancePercentage);
-
-			//TODO: Make this visual to the patient
 		}
 
 		public void Write(string message)
 		{
             //Console.WriteLine(message);
-			byte[] encrypted = Encrypter.Encrypt(message, "password123");
-			this._stream.Write(encrypted, 0, encrypted.Length);
-			this._stream.Flush();
+            //byte[] encrypted = Encrypter.Encrypt(message, "password123");
+            //this.stream.Write(encrypted, 0, encrypted.Length);
+            this._stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
+            this._stream.Flush();
 		}
 	}
 }
