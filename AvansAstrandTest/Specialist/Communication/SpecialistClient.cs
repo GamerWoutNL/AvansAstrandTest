@@ -21,7 +21,7 @@ namespace Specialist.Communication
 		public SpecialistClient()
 		{
 			this.client = new TcpClient();
-			this.buffer = new byte[65536];
+			this.buffer = new byte[1000000000];
 		}
 
 		public void Connect(string host, int port)
