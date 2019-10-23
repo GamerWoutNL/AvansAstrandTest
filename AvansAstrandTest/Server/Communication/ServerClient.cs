@@ -9,6 +9,7 @@ using ServerProgram.Data;
 using System.IO;
 using System.Timers;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace ServerProgram.Communication
 {
@@ -168,6 +169,9 @@ namespace ServerProgram.Communication
 
 		public void WriteObject<T>(T obj)
 		{
+			//string json = JsonConvert.SerializeObject(obj);
+			//byte[] length = Encoding.ASCII.GetBytes(json);
+
 			byte[] objectBytes = obj.SerializeToByteArray();
 			this.stream.Write(BitConverter.GetBytes(objectBytes.Length), 0, 4);
 			this.stream.Write(objectBytes, 0, objectBytes.Length);

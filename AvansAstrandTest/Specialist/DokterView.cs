@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Specialist.Communication;
 using ServerProgram.Data;
+using System.Windows.Threading;
 
 namespace Specialist
 {
@@ -35,7 +36,10 @@ namespace Specialist
                 {
                     patientNames.Add(patientData.Name);
                 }
-                this.PatientNamesWithData.Add(patientData.Name, patientData);
+                if (!this.PatientNamesWithData.Keys.Contains(patientData.Name))
+				{
+					this.PatientNamesWithData.Add(patientData.Name, patientData);
+				}
             }
 
             return patientNames;
@@ -48,10 +52,16 @@ namespace Specialist
 
         public void UpdateNamesInNameBox()
         {
-            this.NameComboBox.Items.Clear();
+			this.Invoke((MethodInvoker)delegate
+			{
+				this.NameComboBox.Items.Clear();
+			});
             foreach (String name in GetPatientNames())
             {
-                this.NameComboBox.Items.Add(name);
+				this.Invoke((MethodInvoker)delegate
+				{
+					this.NameComboBox.Items.Add(name);
+				});
             }
         }
 
@@ -82,8 +92,11 @@ namespace Specialist
 
         private void LoadSessionButton_Click(object sender, EventArgs e)
         {
-            SessionViewForm SessionView1 = new SessionViewForm(this.SessionComboBox.SelectedItem as Patient);
-            SessionView1.ShowDialog();
+			this.Invoke((MethodInvoker)delegate
+			{
+				SessionViewForm SessionView1 = new SessionViewForm(this.SessionComboBox.SelectedItem as Patient);
+				SessionView1.ShowDialog();
+			});
         }
     }
 }

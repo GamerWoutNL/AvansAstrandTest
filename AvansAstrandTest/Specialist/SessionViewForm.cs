@@ -39,7 +39,8 @@ namespace Specialist
             ChartValues<DateTimePoint> PowerPoints = new ChartValues<DateTimePoint>();
             foreach (DataPoint dataPoint in patient.Session.InstantaniousPowerDataPoints) PowerPoints.Add(new DateTimePoint(dataPoint.Time, dataPoint.Data));
 
-            this.Chart.Series = new LiveCharts.SeriesCollection
+			LiveCharts.WinForms.CartesianChart chart = new LiveCharts.WinForms.CartesianChart();
+            chart.Series = new LiveCharts.SeriesCollection
             {
                 new LineSeries
                 {
@@ -57,6 +58,8 @@ namespace Specialist
                     Values = PowerPoints
                 }
             };
+
+			chartContainer.Controls.Add(chart);
         }
     }
 }
