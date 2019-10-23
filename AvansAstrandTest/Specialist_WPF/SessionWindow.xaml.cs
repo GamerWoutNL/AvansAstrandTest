@@ -40,14 +40,15 @@ namespace Specialist_WPF
             patient.Session.InstantaniousCadenceDataPoints.Sort((x, y) => x.Time.CompareTo(y.Time));
             patient.Session.InstantaniousPowerDataPoints.Sort((x, y) => x.Time.CompareTo(y.Time));
 
-            ChartValues<DateTimePoint> HeartratePoints = new ChartValues<DateTimePoint>();
-            foreach (DataPoint dataPoint in patient.Session.HeartrateDataPoints) HeartratePoints.Add(new DateTimePoint(dataPoint.Time, dataPoint.Data));
+            DateTime firstRecorderTime = this.patient.Session.HeartrateDataPoints.First().Time;
+            ChartValues<ObservablePoint> HeartratePoints = new ChartValues<ObservablePoint>();
+            foreach (DataPoint dataPoint in patient.Session.HeartrateDataPoints) HeartratePoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
 
-            ChartValues<DateTimePoint> CadencePoints = new ChartValues<DateTimePoint>();
-            foreach (DataPoint dataPoint in patient.Session.InstantaniousCadenceDataPoints) CadencePoints.Add(new DateTimePoint(dataPoint.Time, dataPoint.Data));
+            ChartValues<ObservablePoint> CadencePoints = new ChartValues<ObservablePoint>();
+            foreach (DataPoint dataPoint in patient.Session.InstantaniousCadenceDataPoints) CadencePoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
 
-            ChartValues<DateTimePoint> PowerPoints = new ChartValues<DateTimePoint>();
-            foreach (DataPoint dataPoint in patient.Session.InstantaniousPowerDataPoints) PowerPoints.Add(new DateTimePoint(dataPoint.Time, dataPoint.Data));
+            ChartValues<ObservablePoint> PowerPoints = new ChartValues<ObservablePoint>();
+            foreach (DataPoint dataPoint in patient.Session.InstantaniousPowerDataPoints) PowerPoints.Add(new ObservablePoint((dataPoint.Time - firstRecorderTime).TotalSeconds, dataPoint.Data));
 
             this.Chart.Series = new LiveCharts.SeriesCollection
             {
