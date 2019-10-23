@@ -30,11 +30,15 @@ namespace ErgoConnect
 
             Program program = new Program(ergoID, patientName, patientAge, patientGender, patientWeight);
             //Win forms: Start session 
-            program.client.Write($"<{ServerProgram.Data.Tag.MT.ToString()}>patient<{ServerProgram.Data.Tag.AC.ToString()}>sessionstart<{ServerProgram.Data.Tag.EOF.ToString()}>");
             ActiveWorkoutView workoutView = new ActiveWorkoutView();
+
             program.client.AttachMessageCallback(workoutView);
+
+            program.StartSessions();
+
             workoutView.ShowDialog();
-            this.Close();
+
+            
         }
     }
 }

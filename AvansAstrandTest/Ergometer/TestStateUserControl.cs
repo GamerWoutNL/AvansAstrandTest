@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace ErgoConnect
 {
@@ -16,14 +17,16 @@ namespace ErgoConnect
         public int minutes { get; set; }
         public int seconds { get; set; }
         public bool active { get; set; }
-        public Timer timer { get; set; }
+        public DispatcherTimer timer { get; set; }
         public StateCallback CallBack { get; set; }
 
         public TestStateUserControl()
         {
             InitializeComponent();
             this.active = false;
-            this.timer = new Timer();
+            this.timer = new DispatcherTimer();
+            this.timer.Interval = TimeSpan.FromSeconds(1);
+            this.timer.Tick += Timer_Tick;
         }
 
         public void Initialize(string state, int minutes, StateCallback callback)
@@ -32,11 +35,11 @@ namespace ErgoConnect
             this.minutes = minutes;
             this.seconds = minutes * 60;
             this.CallBack = callback;
-
             this.StateLabel.Text = this.state;
             this.TimeLabel.Text = $"0{minutes}:00";
-            timer.Interval = 1000;
-            timer.Tick += Timer_Tick;
+
+            //this.timer.Start();
+      
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -61,7 +64,7 @@ namespace ErgoConnect
         public void StartState()
         {
             this.BackColor = Color.LightBlue;
-            timer.Start();
+            this.timer.Start();
         }
 
         public void StopState()

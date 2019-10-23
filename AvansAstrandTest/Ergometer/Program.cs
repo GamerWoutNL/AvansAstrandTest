@@ -34,7 +34,8 @@ namespace ErgoConnect
 			client.Connect("localhost", 5678, ergoID);
 			client.Write($"<{Tag.MT.ToString()}>patient<{Tag.AC.ToString()}>login<{Tag.PNA.ToString()}>{patientName}<{Tag.PAG.ToString()}>{patientAge}<{Tag.PGE.ToString()}>{patientGender}<{Tag.PWE.ToString()}>{patientWeight}<{Tag.EOF.ToString()}>");
 
-			this.ergo = new BLEConnect(ergoID, client, this);
+
+            this.ergo = new BLEConnect(ergoID, client, this);
 			client.bleConnect = ergo;
 			this.ergo.Connect();
 		}
@@ -45,5 +46,11 @@ namespace ErgoConnect
 			bLESimulator = new BLESimulator("01249", client);
             new Thread(new ThreadStart(bLESimulator.RunSimulator)).Start();
 		}
-	}
+
+        public void StartSessions()
+        {
+            client.Write($"<{ServerProgram.Data.Tag.MT.ToString()}>patient<{ServerProgram.Data.Tag.AC.ToString()}>sessionstart<{ServerProgram.Data.Tag.EOF.ToString()}>");
+
+        }
+    }
 }
