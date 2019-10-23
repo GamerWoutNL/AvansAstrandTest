@@ -80,9 +80,10 @@ namespace Specialist.Communication
 
 		public void Write(string message)
 		{
-			byte[] encrypted = Encrypter.Encrypt(message, "password123");
-			this.stream.Write(encrypted, 0, encrypted.Length);
-			this.stream.Flush();
+            //byte[] encrypted = Encrypter.Encrypt(message, "password123");
+            //this.stream.Write(encrypted, 0, encrypted.Length);
+            this.stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
+            this.stream.Flush();
 		}
 
 		public void Disconnect()

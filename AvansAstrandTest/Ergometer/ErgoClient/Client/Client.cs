@@ -53,7 +53,8 @@ namespace Client
 			try
 			{
 				int count = this._stream.EndRead(ar);
-				this.totalBuffer += Encrypter.Decrypt(this._buffer.SubArray(0, count), "password123");
+                //this.totalBuffer += Encrypter.Decrypt(this._buffer.SubArray(0, count), "password123");
+                this.totalBuffer += Encoding.ASCII.GetString(this._buffer, 0, count);
 
 				string eof = $"<{Tag.EOF.ToString()}>";
 				while (totalBuffer.Contains(eof))
@@ -154,9 +155,10 @@ namespace Client
 		public void Write(string message)
 		{
             //Console.WriteLine(message);
-			byte[] encrypted = Encrypter.Encrypt(message, "password123");
-			this._stream.Write(encrypted, 0, encrypted.Length);
-			this._stream.Flush();
+            //byte[] encrypted = Encrypter.Encrypt(message, "password123");
+            //this.stream.Write(encrypted, 0, encrypted.Length);
+            this._stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
+            this._stream.Flush();
 		}
 	}
 }

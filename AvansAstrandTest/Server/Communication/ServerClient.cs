@@ -38,9 +38,10 @@ namespace ServerProgram.Communication
 			try
 			{
 				int count = this.stream.EndRead(ar);
-				string read = Encrypter.Decrypt(this.buffer.SubArray(0, count), "password123");
+				//string read = Encrypter.Decrypt(this.buffer.SubArray(0, count), "password123");
+                string read = Encoding.ASCII.GetString(this.buffer, 0, count);
 
-				string eof = $"<{Tag.EOF.ToString()}>";
+                string eof = $"<{Tag.EOF.ToString()}>";
 				while (read.Contains(eof))
 				{
 					string packet = read.Substring(0, read.IndexOf(eof) + eof.Length);
@@ -176,8 +177,9 @@ namespace ServerProgram.Communication
 		
 		public void Write(string message)
 		{
-			byte[] encrypted = Encrypter.Encrypt(message, "password123");
-			this.stream.Write(encrypted, 0, encrypted.Length);
+            //byte[] encrypted = Encrypter.Encrypt(message, "password123");
+            //this.stream.Write(encrypted, 0, encrypted.Length);
+            this.stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
 			this.stream.Flush();
 		}
 
